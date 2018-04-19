@@ -23,7 +23,7 @@ dependencies {
 
 def applicationName = "CobolPluginUnitTestExtension"
 group = 'de.sebastianruziczka'
-version = '0.0.1'
+version = '0.0.2'
 
 jar {
 	manifest {
