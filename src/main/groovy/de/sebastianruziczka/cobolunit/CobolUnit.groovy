@@ -55,7 +55,7 @@ class CobolUnit implements CobolTestFramework{
 		processBuilder.directory(file)
 		logger.info('Framwork compile command args: ' + processBuilder.command().dump())
 
-		ProcessWrapper processWrapper = new ProcessWrapper(processBuilder, 'FramweorkCompile', this.frameworkBin() + '/' + 'ZUTZCPC.LOG')
+		ProcessWrapper processWrapper = new ProcessWrapper(processBuilder, 'FrameworkCompile', this.frameworkBin() + '/' + 'ZUTZCPC.LOG')
 		return processWrapper.exec()
 	}
 
@@ -131,7 +131,7 @@ class CobolUnit implements CobolTestFramework{
 	}
 
 	private String executeTest(String binModulePath, String execName) {
-		def logFilePath = binModulePath + '/' + 'TESTEXEC.LOG'
+		def logFilePath = binModulePath + '/' + execName + '_TESTEXEC.LOG'
 
 		ProcessBuilder processBuilder = new ProcessBuilder(binModulePath + '/' + execName)
 		processBuilder.directory(new File(binModulePath))
