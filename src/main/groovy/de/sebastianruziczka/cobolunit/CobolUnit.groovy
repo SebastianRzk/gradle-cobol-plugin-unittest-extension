@@ -5,13 +5,13 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import de.sebastianruziczka.CobolExtension
-import de.sebastianruziczka.api.CobolUnitFramework
+import de.sebastianruziczka.api.CobolTestFramework
 import de.sebastianruziczka.api.CobolUnitFrameworkProvider
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.process.ProcessWrapper
 
 @CobolUnitFrameworkProvider
-class CobolUnit implements CobolUnitFramework{
+class CobolUnit implements CobolTestFramework{
 	Logger logger = LoggerFactory.getLogger('cobolUnit')
 
 	private CobolExtension configuration
