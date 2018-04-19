@@ -8,6 +8,8 @@ import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolTestFramework
 import de.sebastianruziczka.api.CobolUnitFrameworkProvider
 import de.sebastianruziczka.buildcycle.test.TestFile
+import de.sebastianruziczka.buildcycle.test.TestMethod
+import de.sebastianruziczka.buildcycle.test.TestMethodResult
 import de.sebastianruziczka.process.ProcessWrapper
 
 @CobolUnitFrameworkProvider
@@ -104,7 +106,28 @@ class CobolUnit implements CobolTestFramework{
 		logger.info('Run Test: ' + testName)
 		String result = this.executeTest(this.frameworkBinModuleOf(testName), this.getFileName(testName))
 
-		return new TestFile()
+		return this.parseProcessOutput(result)
+	}
+
+	private TestFile parseProcessOutput(String processOutput) {
+		String[] lines = processOutput.split(System.getProperty('line.separator'))
+		if (!lines[1].equals('TEST SUITE:')){
+			throw new IllegalArgumentException('Could not parse cobol unit test output');
+		}
+
+		TestFile testFile = new TestFile()
+		for (int lineNumber = 3; lineNumber < lines.length; lineNumber ++) {
+			if (lines[lineNumber].startsWith('     PASS:   ')) {
+				String name = lines[lineNumber].substring('     PASS:   '.length())
+				testFile.addTestMethod(new TestMethod(name, TestMethodResult.SUCCESSFUL, ''))
+			}
+			else if (lines[lineNumber].startsWith('**** FAIL:   ')) {
+				String name = lines[lineNumber].substring('**** FAIL:   '.length())
+				String compareResult = lines[lineNumber + 1]
+				testFile.addTestMethod(new TestMethod(name, TestMethodResult.FAILED, compareResult))
+			}
+		}
+		return testFile
 	}
 
 	private String executeTest(String binModulePath, String execName) {
@@ -115,8 +138,8 @@ class CobolUnit implements CobolTestFramework{
 		logger.info('Executing test file: '+ binModulePath + '/' + execName)
 
 		ProcessWrapper processWrapper = new ProcessWrapper(processBuilder, 'Execute Unittest '+ execName, logFilePath)
-
-		return processWrapper.exec()
+		processWrapper.exec(true)
+		return processWrapper.processOutput()
 	}
 
 
