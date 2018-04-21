@@ -34,7 +34,7 @@ build.gradle:
     }
 
     plugins {
-    	id 'de.sebastianruziczka.Cobol' version '0.0.7' apply false
+    	id 'de.sebastianruziczka.Cobol' version '0.0.10' apply false
     }
 
 
