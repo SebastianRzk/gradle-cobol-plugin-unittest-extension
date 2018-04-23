@@ -34,5 +34,5 @@ echo "<<<<<<<"
 
 echo ">>>>>>> exec test"
 cd endToEndTest/gradle-cobol-plugin-example
-gradle cobolCheck
+gradle checkCobol
 echo "<<<<<<<"
