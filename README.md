@@ -29,12 +29,12 @@ build.gradle:
 
     buildscript {
     	 dependencies {
-    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: '0.0.2'
+    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: '0.0.3'
     	}
     }
 
     plugins {
-    	id 'de.sebastianruziczka.Cobol' version '0.0.10' apply false
+    	id 'de.sebastianruziczka.Cobol' version '0.0.12' apply false
     }
 
 
