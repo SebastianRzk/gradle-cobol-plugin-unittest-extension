@@ -172,7 +172,7 @@ class CobolUnit implements CobolTestFramework{
 	}
 
 	private String frameworkBin() {
-		return this.configuration.absoluteUnitTestFramworkPath(this.getClass().getSimpleName())
+		return this.configuration.absoluteUnitTestFrameworkPath(this.getClass().getSimpleName())
 	}
 
 	private int preprocessTest(String mainFile, String testFile, String testConfig) {
@@ -180,7 +180,7 @@ class CobolUnit implements CobolTestFramework{
 		ProcessBuilder processBuilder = new ProcessBuilder(zutzcpcPath)
 
 		def env = processBuilder.environment()
-		env.put('SRCPRG', this.configuration.absoluteSrcMainModulePath(mainFile))
+		env.put('SRCPRG', this.configuration.absoluteSrcMainPath(mainFile))
 		env.put('TESTPRG', this.frameworkBin() + '/' + testFile)
 		env.put('TESTNAME', this.getFileName(testFile))
 		if (testConfig == null) {
