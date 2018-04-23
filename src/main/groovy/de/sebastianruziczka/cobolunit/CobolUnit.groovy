@@ -96,7 +96,7 @@ class CobolUnit implements CobolTestFramework{
 
 	@Override
 	public TestFile test(String srcName, String testName) {
-		String srcModulePath = this.srcModuleOf(srcName)
+		String srcModulePath = this.configuration.absoluteSrcMainModulePath(srcName)
 		String testModulePath = this.testModuleOf(testName)
 
 		logger.info('Preprocess Test: ' + testName)
@@ -142,22 +142,14 @@ class CobolUnit implements CobolTestFramework{
 		return processWrapper.processOutput()
 	}
 
-
-
-
-	private String srcModuleOf(String relativePath) {
-		String absolutePath = this.configuration.absoluteSrcMainPath(this.project) + '/' + relativePath
-		return this.project.file(absolutePath).getParent()
-	}
-
 	private String testModuleOf(String relativePath) {
-		String absolutePath = this.configuration.absoluteSrcTestPath(this.project) + '/' + relativePath
-		return this.project.file(absolutePath).getParent()
+		String absolutePath = this.configuration.absoluteSrcTestPath() + '/' + relativePath
+		return this.configuration.projectFileResolver(absolutePath).getParent()
 	}
 
 	private String frameworkBinModuleOf(String relativePath) {
 		String absolutePath = this.frameworkBin() + '/' + relativePath
-		return this.project.file(absolutePath).getParent()
+		return this.configuration.projectFileResolver(absolutePath).getParent()
 	}
 
 	private int compileTest(String srcModulePath, String testModulePath, String testName) {
@@ -180,7 +172,7 @@ class CobolUnit implements CobolTestFramework{
 	}
 
 	private String frameworkBin() {
-		return this.configuration.absoluteUnitTestFramworkPath(this.project, this.getClass().getSimpleName())
+		return this.configuration.absoluteUnitTestFramworkPath(this.getClass().getSimpleName())
 	}
 
 	private int preprocessTest(String mainFile, String testFile, String testConfig) {
@@ -188,7 +180,7 @@ class CobolUnit implements CobolTestFramework{
 		ProcessBuilder processBuilder = new ProcessBuilder(zutzcpcPath)
 
 		def env = processBuilder.environment()
-		env.put('SRCPRG', this.configuration.absoluteSrcMainModulePath(this.project)+ '/'+ mainFile)
+		env.put('SRCPRG', this.configuration.absoluteSrcMainModulePath(mainFile)
 		env.put('TESTPRG', this.frameworkBin() + '/' + testFile)
 		env.put('TESTNAME', this.getFileName(testFile))
 		if (testConfig == null) {
@@ -198,7 +190,7 @@ class CobolUnit implements CobolTestFramework{
 		}
 		String copybooks = this.getParent(mainFile) + ':' + this.getParent(testFile)
 		env.put('COBCOPY', copybooks)
-		env.put('UTESTS', this.configuration.absoluteSrcTestPath(this.project) + '/' + testFile)
+		env.put('UTESTS', this.configuration.absoluteSrcTestPath() + '/' + testFile)
 
 		logger.info('Environment: ' + env.dump())
 		logger.info('Test precompile command args: ' + processBuilder.command().dump())
