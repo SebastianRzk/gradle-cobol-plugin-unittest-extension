@@ -180,7 +180,7 @@ class CobolUnit implements CobolTestFramework{
 		ProcessBuilder processBuilder = new ProcessBuilder(zutzcpcPath)
 
 		def env = processBuilder.environment()
-		env.put('SRCPRG', this.configuration.absoluteSrcMainModulePath(mainFile)
+		env.put('SRCPRG', this.configuration.absoluteSrcMainModulePath(mainFile))
 		env.put('TESTPRG', this.frameworkBin() + '/' + testFile)
 		env.put('TESTNAME', this.getFileName(testFile))
 		if (testConfig == null) {
