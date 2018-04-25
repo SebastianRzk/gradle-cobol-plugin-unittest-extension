@@ -215,7 +215,13 @@ class CobolUnit implements CobolTestFramework{
 	}
 
 	private String versionNumber() {
-		return '0.0.3'
+		URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
+		URL manifestUrl = urlClassLoader.findResource("META-INF/MANIFEST.MF");
+		InputStream is = manifestUrl.openStream();
+		Properties props = new Properties();
+		props.load(is);
+		is.close();
+		return props.get('Implementation-Version')
 	}
 
 	@Override
