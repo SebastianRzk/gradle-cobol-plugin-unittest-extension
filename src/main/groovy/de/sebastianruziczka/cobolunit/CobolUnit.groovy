@@ -213,4 +213,13 @@ class CobolUnit implements CobolTestFramework{
 		File file = new File(path)
 		return file.getParent()
 	}
+
+	private String versionNumber() {
+		return '0.0.3'
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + ' version: ' + versionNumber()
+	}
 }
