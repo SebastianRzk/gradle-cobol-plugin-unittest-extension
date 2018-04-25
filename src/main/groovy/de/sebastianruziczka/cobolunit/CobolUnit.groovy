@@ -10,6 +10,7 @@ import de.sebastianruziczka.api.CobolUnitFrameworkProvider
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.buildcycle.test.TestMethod
 import de.sebastianruziczka.buildcycle.test.TestMethodResult
+import de.sebastianruziczka.metainf.MetaInfPropertyResolver
 import de.sebastianruziczka.process.ProcessWrapper
 
 @CobolUnitFrameworkProvider
@@ -215,13 +216,8 @@ class CobolUnit implements CobolTestFramework{
 	}
 
 	private String versionNumber() {
-		URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
-		URL manifestUrl = urlClassLoader.findResource("META-INF/MANIFEST.MF");
-		InputStream is = manifestUrl.openStream();
-		Properties props = new Properties();
-		props.load(is);
-		is.close();
-		return props.get('Implementation-Version')
+		MetaInfPropertyResolver resolver = new MetaInfPropertyResolver('gradle-cobol-plugin-unittest-extension')
+		return resolver.get('Implementation-Version').orElse('No version found!')
 	}
 
 	@Override
