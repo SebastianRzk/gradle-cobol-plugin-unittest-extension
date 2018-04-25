@@ -217,8 +217,9 @@ class CobolUnit implements CobolTestFramework{
 
 	private String versionNumber() {
 		MetaInfPropertyResolver resolver = new MetaInfPropertyResolver('gradle-cobol-plugin-unittest-extension')
-		return resolver.get('Implementation-Version').orElse('No version found!')
+		return resolver.get('Implementation-Version').orElse('No version found!') + '(' + resolver.get('Build-Date').orElse('No date found') + ')'
 	}
+
 
 	@Override
 	public String toString() {
