@@ -5,11 +5,11 @@ buildscript {
 }
 
 plugins {
-	id 'de.sebastianruziczka.Cobol' version '0.0.14' apply false
+	id 'de.sebastianruziczka.Cobol' version '0.0.15' apply false
 }
 
 subprojects {
-	apply plugin: 'de.sebastianruziczka.Cobol'		
+	apply plugin: 'de.sebastianruziczka.Cobol'
 }
 
 
