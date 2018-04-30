@@ -163,12 +163,10 @@ class CobolUnit implements CobolTestFramework{
 
 	private int compileTest(String srcModulePath, String testModulePath, String testName) {
 		String precompiledTestPath = this.frameworkBin() + '/' + testName
-		ProcessBuilder processBuilder = new ProcessBuilder('cobc','-v', '-x', precompiledTestPath)
 		def modulePath = this.frameworkBinModuleOf(testName)
+		ProcessBuilder processBuilder = new ProcessBuilder('cobc','-v','-I', srcModulePath , '-I', testModulePath , '-I', this.frameworkBin(), '-x', precompiledTestPath)
 		processBuilder.directory(new File(modulePath))
 		def env = processBuilder.environment()
-		String cobCopyEnvValue = srcModulePath + ':' + testModulePath + ':' + this.frameworkBin()
-		env.put('COBCOPY', cobCopyEnvValue)
 		logger.info('Compiling precompiled test')
 		logger.info('Module path: ' + modulePath)
 		logger.info('Precompiled test path: ' + precompiledTestPath)
@@ -197,8 +195,6 @@ class CobolUnit implements CobolTestFramework{
 		}else {
 			env.put('UTSTCFG', testConfig)
 		}
-		String copybooks = this.getParent(mainFile) + ':' + this.getParent(testFile)
-		env.put('COBCOPY', copybooks)
 		env.put('UTESTS', this.configuration.absoluteSrcTestPath() + '/' + testFile)
 
 		logger.info('Environment: ' + env.dump())
