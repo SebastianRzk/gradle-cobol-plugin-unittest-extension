@@ -17,13 +17,13 @@ repositories {
 
 dependencies {
 	compileOnly gradleApi()
-	compileOnly group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin', version: '0.0.15'
+	compileOnly group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin', version: '0.0.16'
 }
 
 
 def applicationName = "CobolPluginUnitTestExtension"
 group = 'de.sebastianruziczka'
-version = '0.0.4'
+version = '0.0.5'
 
 jar {
 	manifest {

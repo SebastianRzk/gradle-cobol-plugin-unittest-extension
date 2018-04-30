@@ -51,7 +51,7 @@ class CobolUnit implements CobolTestFramework{
 	}
 
 	private int compileTestFramework(String frameworkPath,String mainfile) {
-		ProcessBuilder processBuilder=new ProcessBuilder('cobc', '-x', '-std=ibm', mainfile)
+		ProcessBuilder processBuilder = new ProcessBuilder('cobc','-v', '-x', '-std=ibm', mainfile)
 		def file = new File(frameworkPath)
 		processBuilder.directory(file)
 		logger.info('Framwork compile command args: ' + processBuilder.command().dump())
@@ -100,6 +100,13 @@ class CobolUnit implements CobolTestFramework{
 		String srcModulePath = this.configuration.absoluteSrcMainModulePath(srcName)
 		String testModulePath = this.testModuleOf(testName)
 
+		String testBuildPath = this.frameworkBin() + '/' + testName
+		File buildTestModule = new File(this.getParent(testBuildPath))
+		if (!buildTestModule.exists()) {
+			this.logger.info('Creating test directory ' + testBuildPath)
+			buildTestModule.mkdirs()
+		}
+
 		logger.info('Preprocess Test: ' + testName)
 		this.preprocessTest(srcName, testName, null)
 		logger.info('Compile Test: ' + testName)
@@ -107,25 +114,26 @@ class CobolUnit implements CobolTestFramework{
 		logger.info('Run Test: ' + testName)
 		String result = this.executeTest(this.frameworkBinModuleOf(testName), this.getFileName(testName))
 
-		return this.parseProcessOutput(result)
+		return this.parseProcessOutput(result, testName)
 	}
 
-	private TestFile parseProcessOutput(String processOutput) {
+	private TestFile parseProcessOutput(String processOutput, String testFileName) {
 		String[] lines = processOutput.split(System.getProperty('line.separator'))
 		if (!lines[1].equals('TEST SUITE:')){
 			throw new IllegalArgumentException('Could not parse cobol unit test output');
 		}
 
 		TestFile testFile = new TestFile()
+		testFile.addName(testFileName + '(' + lines[2].trim() + ')')
 		for (int lineNumber = 3; lineNumber < lines.length; lineNumber ++) {
 			if (lines[lineNumber].startsWith('     PASS:   ')) {
-				String name = lines[lineNumber].substring('     PASS:   '.length())
+				String name = lines[lineNumber].substring('     PASS:   '.length()).trim()
 				testFile.addTestMethod(new TestMethod(name, TestMethodResult.SUCCESSFUL, ''))
 			}
 			else if (lines[lineNumber].startsWith('**** FAIL:   ')) {
-				String name = lines[lineNumber].substring('**** FAIL:   '.length())
+				String name = lines[lineNumber].substring('**** FAIL:   '.length()).trim()
 				String compareResult = lines[lineNumber + 1]
-				testFile.addTestMethod(new TestMethod(name, TestMethodResult.FAILED, compareResult))
+				testFile.addTestMethod(new TestMethod(name, TestMethodResult.FAILED, compareResult.trim()))
 			}
 		}
 		return testFile
@@ -155,12 +163,10 @@ class CobolUnit implements CobolTestFramework{
 
 	private int compileTest(String srcModulePath, String testModulePath, String testName) {
 		String precompiledTestPath = this.frameworkBin() + '/' + testName
-		ProcessBuilder processBuilder = new ProcessBuilder('cobc', '-x', precompiledTestPath)
 		def modulePath = this.frameworkBinModuleOf(testName)
+		ProcessBuilder processBuilder = new ProcessBuilder('cobc','-v','-I', srcModulePath , '-I', testModulePath , '-I', this.frameworkBin(), '-x', precompiledTestPath)
 		processBuilder.directory(new File(modulePath))
 		def env = processBuilder.environment()
-		String cobCopyEnvValue = srcModulePath + ':' + testModulePath
-		env.put('COBCOPY', cobCopyEnvValue)
 		logger.info('Compiling precompiled test')
 		logger.info('Module path: ' + modulePath)
 		logger.info('Precompiled test path: ' + precompiledTestPath)
@@ -189,8 +195,6 @@ class CobolUnit implements CobolTestFramework{
 		}else {
 			env.put('UTSTCFG', testConfig)
 		}
-		String copybooks = this.getParent(mainFile) + ':' + this.getParent(testFile)
-		env.put('COBCOPY', copybooks)
 		env.put('UTESTS', this.configuration.absoluteSrcTestPath() + '/' + testFile)
 
 		logger.info('Environment: ' + env.dump())
