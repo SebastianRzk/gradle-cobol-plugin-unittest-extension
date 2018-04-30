@@ -107,25 +107,26 @@ class CobolUnit implements CobolTestFramework{
 		logger.info('Run Test: ' + testName)
 		String result = this.executeTest(this.frameworkBinModuleOf(testName), this.getFileName(testName))
 
-		return this.parseProcessOutput(result)
+		return this.parseProcessOutput(result, testName)
 	}
 
-	private TestFile parseProcessOutput(String processOutput) {
+	private TestFile parseProcessOutput(String processOutput, String testFileName) {
 		String[] lines = processOutput.split(System.getProperty('line.separator'))
 		if (!lines[1].equals('TEST SUITE:')){
 			throw new IllegalArgumentException('Could not parse cobol unit test output');
 		}
 
 		TestFile testFile = new TestFile()
+		testFile.addName(testFileName + '(' + lines[2].trim() + ')')
 		for (int lineNumber = 3; lineNumber < lines.length; lineNumber ++) {
 			if (lines[lineNumber].startsWith('     PASS:   ')) {
-				String name = lines[lineNumber].substring('     PASS:   '.length())
+				String name = lines[lineNumber].substring('     PASS:   '.length()).trim()
 				testFile.addTestMethod(new TestMethod(name, TestMethodResult.SUCCESSFUL, ''))
 			}
 			else if (lines[lineNumber].startsWith('**** FAIL:   ')) {
-				String name = lines[lineNumber].substring('**** FAIL:   '.length())
+				String name = lines[lineNumber].substring('**** FAIL:   '.length()).trim()
 				String compareResult = lines[lineNumber + 1]
-				testFile.addTestMethod(new TestMethod(name, TestMethodResult.FAILED, compareResult))
+				testFile.addTestMethod(new TestMethod(name, TestMethodResult.FAILED, compareResult.trim()))
 			}
 		}
 		return testFile
