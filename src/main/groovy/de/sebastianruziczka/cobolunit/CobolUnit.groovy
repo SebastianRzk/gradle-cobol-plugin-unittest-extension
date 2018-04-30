@@ -51,7 +51,7 @@ class CobolUnit implements CobolTestFramework{
 	}
 
 	private int compileTestFramework(String frameworkPath,String mainfile) {
-		ProcessBuilder processBuilder=new ProcessBuilder('cobc', '-x', '-std=ibm', mainfile)
+		ProcessBuilder processBuilder = new ProcessBuilder('cobc','-v', '-x', '-std=ibm', mainfile)
 		def file = new File(frameworkPath)
 		processBuilder.directory(file)
 		logger.info('Framwork compile command args: ' + processBuilder.command().dump())
@@ -99,6 +99,13 @@ class CobolUnit implements CobolTestFramework{
 	public TestFile test(String srcName, String testName) {
 		String srcModulePath = this.configuration.absoluteSrcMainModulePath(srcName)
 		String testModulePath = this.testModuleOf(testName)
+
+		String testBuildPath = this.frameworkBin() + '/' + testName
+		File buildTestModule = new File(this.getParent(testBuildPath))
+		if (!buildTestModule.exists()) {
+			this.logger.info('Creating test directory ' + testBuildPath)
+			buildTestModule.mkdirs()
+		}
 
 		logger.info('Preprocess Test: ' + testName)
 		this.preprocessTest(srcName, testName, null)
@@ -156,11 +163,11 @@ class CobolUnit implements CobolTestFramework{
 
 	private int compileTest(String srcModulePath, String testModulePath, String testName) {
 		String precompiledTestPath = this.frameworkBin() + '/' + testName
-		ProcessBuilder processBuilder = new ProcessBuilder('cobc', '-x', precompiledTestPath)
+		ProcessBuilder processBuilder = new ProcessBuilder('cobc','-v', '-x', precompiledTestPath)
 		def modulePath = this.frameworkBinModuleOf(testName)
 		processBuilder.directory(new File(modulePath))
 		def env = processBuilder.environment()
-		String cobCopyEnvValue = srcModulePath + ':' + testModulePath
+		String cobCopyEnvValue = srcModulePath + ':' + testModulePath + ':' + this.frameworkBin()
 		env.put('COBCOPY', cobCopyEnvValue)
 		logger.info('Compiling precompiled test')
 		logger.info('Module path: ' + modulePath)
