@@ -22,6 +22,7 @@ class CobolUnit implements CobolTestFramework{
 	private def defaultConf = ["ZUTZCWS", "SAMPLET"]
 	private final static MAIN_FRAMEWORK_PROGRAMM =  'ZUTZCPC.CBL'
 	private final static DEFAULT_CONF_NAME = 'DEFAULT.CONF'
+	private String pluginName = null
 
 	@Override
 	void configure(CobolExtension configuration, Project project) {
@@ -120,7 +121,7 @@ class CobolUnit implements CobolTestFramework{
 	private TestFile parseProcessOutput(String processOutput, String testFileName) {
 		String[] lines = processOutput.split(System.getProperty('line.separator'))
 		if (!lines[1].equals('TEST SUITE:')){
-			throw new IllegalArgumentException('Could not parse cobol unit test output');
+			throw new IllegalArgumentException('Could not parse cobol unit test output')
 		}
 
 		TestFile testFile = new TestFile()
@@ -227,6 +228,9 @@ class CobolUnit implements CobolTestFramework{
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + ' version: ' + versionNumber()
+		if (this.pluginName == null) {
+			this.pluginName =  this.getClass().getSimpleName() + ' version: ' + versionNumber()
+		}
+		return this.pluginName
 	}
 }
