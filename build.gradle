@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
 	compileOnly gradleApi()
-	compileOnly group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin', version: '0.0.6'
+	compileOnly group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin', version: '0.0.17'
 }
 
 
