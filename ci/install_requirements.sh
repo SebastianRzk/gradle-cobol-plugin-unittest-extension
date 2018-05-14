@@ -1,2 +1,3 @@
 set -e
-sudo apt-get install gradle open-cobol
+sudo apt-get update
+sudo apt-get install open-cobol
