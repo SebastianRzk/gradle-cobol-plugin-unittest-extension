@@ -6,7 +6,7 @@ cd endToEndTest
 git clone https://github.com/RosesTheN00b/gradle-cobol-plugin-example
 git clone https://github.com/RosesTheN00b/gradle-cobol-plugin
 cd gradle-cobol-plugin
-git pull
+git checkout dev
 cd ..
 echo "<<<<<<<"
 

@@ -5,15 +5,6 @@ apply plugin: 'java-gradle-plugin'
 apply plugin: 'ivy-publish'
 apply plugin: 'maven-publish'
 
-repositories {
-	mavenCentral()
-	jcenter()
-	maven {
-		url 'https://sebastianruziczka.de/repo/mvn'
-	}
-}
-
-
 
 dependencies {
 	compileOnly gradleApi()
