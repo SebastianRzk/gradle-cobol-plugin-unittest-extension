@@ -52,7 +52,13 @@ publishing {
 	}
 }
 
-GradlePropertyFilter propFilter = new GradlePropertyFilter([
+GradlePropertyFilter propFilter = new GradleProperttask (switchOffline, type:Copy){
+        from '.'
+        into '.'
+        include '**/*.offline'
+        rename {it - '.offline'}
+        filter { line ->propFilter.filter(line)}
+}yFilter([
 	'gradle.actualVersion' : version,
 	'gradle.unitVersion' : '0.0.5'
 	])
@@ -61,6 +67,13 @@ task (generateVersions, type: Copy){
 	from '.'
 	into '.'
 	include '**/*.base'
-	rename {it - 'base' + 'md'}
+	rename {it - 'base'}
 	filter { line ->propFilter.filter(line)}
+}
+
+task (switchOffline, type:Copy){
+        from '.'
+        into '.'
+        include '**/*.offline'
+        rename {it - '.offline'}
 }

@@ -26,10 +26,7 @@ echo "<<<<<<<"
 
 
 echo ">>>>>>> prepare test-repository"
-rm -v endToEndTest/gradle-cobol-plugin-example/settings.gradle
-cp endToEndTest/gradle-cobol-plugin-example/ci/local_repo_test_settings.gradle endToEndTest/gradle-cobol-plugin-example/settings.gradle
-rm -v endToEndTest/gradle-cobol-plugin-example/build.gradle
-cp ci/build.gradle.replacement endToEndTest/gradle-cobol-plugin-example/build.gradle
+gradle generateVersions switchOffline
 echo "<<<<<<<"
 
 echo ">>>>>>> exec test"
