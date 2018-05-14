@@ -52,8 +52,8 @@ publishing {
 }
 
 GradlePropertyFilter propFilter = new GradlePropertyFilter([
-	'0.0.17' : version,
-	'0.0.5' : '0.0.5'
+        'gradle.actualVersion' : '0.0.17',
+        'gradle.unitVersion' : version
 	])
 
 task (generateVersions, type: Copy){
