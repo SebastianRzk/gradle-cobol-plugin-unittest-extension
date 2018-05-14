@@ -16,15 +16,15 @@ gradle publish
 mv ../repo endToEndTest/repo
 echo "<<<<<<<"
 
-echo ">>>>>>> prepare test-repositories"
-gradle generateVersions switchOffline
-echo "<<<<<<<"
-
 echo ">>>>>>> create local repo for gradle plugin jar"
 cd endToEndTest/gradle-cobol-plugin
 gradle publish
 cd ..
 cd ..
+echo "<<<<<<<"
+
+echo ">>>>>>> prepare test-repositories"
+gradle generateVersions switchOffline
 echo "<<<<<<<"
 
 echo ">>>>>>> exec test"
