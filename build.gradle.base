@@ -22,7 +22,7 @@ dependencies {
 
 def applicationName = "CobolPluginUnitTestExtension"
 group = 'de.sebastianruziczka'
-version = '0.0.5'
+version = '0.0.6'
 
 jar {
 	manifest {
@@ -52,8 +52,8 @@ publishing {
 }
 
 GradlePropertyFilter propFilter = new GradlePropertyFilter([
-	'gradle.actualVersion' : version,
-	'gradle.unitVersion' : 'gradle.unitVersion'
+	'gradle.actualVersion' : '0.0.17',
+	'gradle.unitVersion' :  version
 	])
 
 task (generateVersions, type: Copy){

@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
 	compileOnly gradleApi()
-	compileOnly group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin', version: '0.0.17'
+	compileOnly group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin', version: 'gradle.actualVersion'
 }
 
 
@@ -52,8 +52,8 @@ publishing {
 }
 
 GradlePropertyFilter propFilter = new GradlePropertyFilter([
-	'0.0.17' : version,
-	'0.0.5' : '0.0.5'
+	'gradle.actualVersion' : '0.0.6',
+	'gradle.unitVersion' :  version
 	])
 
 task (generateVersions, type: Copy){
