@@ -10,6 +10,10 @@ git checkout dev
 cd ..
 echo "<<<<<<<"
 
+echo ">>>>>>> prepare test-repository"
+gradle generateVersions switchOffline
+echo "<<<<<<<"
+
 echo ">>>>>>> create local repo for this jar"
 cd ..
 gradle publish
@@ -21,11 +25,6 @@ cd endToEndTest/gradle-cobol-plugin
 gradle publish
 cd ..
 cd ..
-echo "<<<<<<<"
-
-
-echo ">>>>>>> prepare test-repository"
-gradle generateVersions switchOffline
 echo "<<<<<<<"
 
 echo ">>>>>>> exec test"
