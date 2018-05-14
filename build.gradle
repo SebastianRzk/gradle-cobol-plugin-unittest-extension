@@ -51,3 +51,16 @@ publishing {
 		}
 	}
 }
+
+GradlePropertyFilter propFilter = new GradlePropertyFilter([
+	'gradle.actualVersion' : version,
+	'gradle.unitVersion' : '0.0.5'
+	])
+
+task (generateVersions, type: Copy){
+	from '.'
+	into '.'
+	include '**/*.base'
+	rename {it - 'base' + 'md'}
+	filter { line ->propFilter.filter(line)}
+}
