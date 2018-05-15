@@ -16,13 +16,17 @@ repositories {
 
 dependencies {
 	compileOnly gradleApi()
-	compileOnly group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin', version: 'gradle.actualVersion'
+	compileOnly group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin', version: 'latest'
 }
 
 
 def applicationName = "CobolPluginUnitTestExtension"
 group = 'de.sebastianruziczka'
 version = '0.0.6'
+if (project.hasProperty("generateLatest")) {
+        version = 'latest'
+}
+
 
 jar {
 	manifest {
@@ -52,8 +56,7 @@ publishing {
 }
 
 GradlePropertyFilter propFilter = new GradlePropertyFilter([
-	'gradle.actualVersion' : '0.0.17',
-	'gradle.unitVersion' : version
+	'gradle.unitVersion' :  version
 	])
 
 task (generateVersions, type: Copy){
