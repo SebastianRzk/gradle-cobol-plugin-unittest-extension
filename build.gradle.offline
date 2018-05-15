@@ -23,8 +23,11 @@ dependencies {
 def applicationName = "CobolPluginUnitTestExtension"
 group = 'de.sebastianruziczka'
 version = '0.0.6'
+def realVersion = ''
 if (project.hasProperty("generateLatest")) {
+        realVersion = ' (' + version + ')'
         version = 'latest'
+	println 'Publish: ' + version + realVersion
 }
 
 
@@ -32,7 +35,7 @@ jar {
 	manifest {
 		attributes(
 			"Implementation-Title": project.name,
-			"Implementation-Version": version,
+			"Implementation-Version": version + realVersion,
 			"Build-Date": new Date().format( 'dd.MM.yyyy' )
 		)
 	}
