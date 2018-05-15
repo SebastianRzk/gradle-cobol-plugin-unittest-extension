@@ -1,0 +1,10 @@
+pluginManagement {
+	repositories {
+		maven {
+			url '../repo/mvn/'
+
+		}
+	}
+}
+
+include ':project-cobol-free-format', ':project-cobol-fixed-format', ':project-cobol-unit-test'
