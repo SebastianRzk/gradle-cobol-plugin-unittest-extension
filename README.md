@@ -31,6 +31,19 @@ build.gradle:
 
     buildscript {
     	 dependencies {
+    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: 'latest'
+    	}
+    }
+
+    plugins {
+    	id 'de.sebastianruziczka.Cobol' version 'latest' apply false
+    }
+
+
+Or hardcode specific versions in your build.gradle (not preferred):
+
+    buildscript {
+    	 dependencies {
     		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: '0.0.6'
     	}
     }
@@ -38,7 +51,6 @@ build.gradle:
     plugins {
     	id 'de.sebastianruziczka.Cobol' version '0.0.18' apply false
     }
-
 
 settings.gradle:
 
