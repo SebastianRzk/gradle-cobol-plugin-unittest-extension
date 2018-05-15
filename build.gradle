@@ -23,6 +23,10 @@ dependencies {
 def applicationName = "CobolPluginUnitTestExtension"
 group = 'de.sebastianruziczka'
 version = '0.0.6'
+if (project.hasProperty("generateLatest")) {
+        version = 'latest'
+}
+
 
 jar {
 	manifest {
