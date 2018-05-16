@@ -44,12 +44,12 @@ Or hardcode specific versions in your build.gradle (not preferred):
 
     buildscript {
     	 dependencies {
-    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: '0.0.6'
+    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: '0.0.7'
     	}
     }
 
     plugins {
-    	id 'de.sebastianruziczka.Cobol' version '0.0.18' apply false
+    	id 'de.sebastianruziczka.Cobol' version '0.0.19' apply false
     }
 
 settings.gradle:
