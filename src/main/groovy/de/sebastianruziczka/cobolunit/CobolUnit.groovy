@@ -1,5 +1,7 @@
 package de.sebastianruziczka.cobolunit
 
+import static de.sebastianruziczka.compiler.api.CompileStandard.ibm
+
 import org.gradle.api.Project
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -32,6 +34,17 @@ class CobolUnit implements CobolTestFramework{
 
 	@Override
 	int prepare() {
+		logger.info('Copy framework into build directory')
+		String binFramworkPath = this.copyFrameworkIntoBuildDirectory()
+
+		logger.info('Create default test.conf')
+		this.createTestConf()
+
+		logger.info('Start compiling cobol-unit test framework')
+		return this.compileTestFramework(binFramworkPath, MAIN_FRAMEWORK_PROGRAMM)
+	}
+
+	private String copyFrameworkIntoBuildDirectory() {
 		def files = [
 			MAIN_FRAMEWORK_PROGRAMM,
 			'ZUTZCPD.CPY',
@@ -43,22 +56,15 @@ class CobolUnit implements CobolTestFramework{
 		files.each{
 			copy('res/' + it, binFramworkPath + it )
 		}
-
-		logger.info('Create default test.conf')
-		this.createTestConf()
-
-		logger.info('Start compiling cobol-unit test framework')
-		return this.compileTestFramework(binFramworkPath, MAIN_FRAMEWORK_PROGRAMM)
+		return binFramworkPath
 	}
 
 	private int compileTestFramework(String frameworkPath,String mainfile) {
-		ProcessBuilder processBuilder = new ProcessBuilder('cobc','-v', '-x', '-std=ibm', mainfile)
-		def file = new File(frameworkPath)
-		processBuilder.directory(file)
-		logger.info('Framwork compile command args: ' + processBuilder.command().dump())
-
-		ProcessWrapper processWrapper = new ProcessWrapper(processBuilder, 'FrameworkCompile', this.frameworkBin() + '/' + 'ZUTZCPC.LOG')
-		return processWrapper.exec()
+		return this.configuration.compiler
+				.buildExecutable(this.configuration)
+				.setCompileStandard(ibm)
+				.setTargetAndBuild(this.frameworkBin() + '/' + MAIN_FRAMEWORK_PROGRAMM)
+				.execute('FrameworkCompile')
 	}
 
 	private void createTestConf() {
@@ -164,19 +170,14 @@ class CobolUnit implements CobolTestFramework{
 
 	private int compileTest(String srcModulePath, String testModulePath, String testName) {
 		String precompiledTestPath = this.frameworkBin() + '/' + testName
-		def modulePath = this.frameworkBinModuleOf(testName)
-		ProcessBuilder processBuilder = new ProcessBuilder('cobc','-v','-I', srcModulePath , '-I', testModulePath , '-I', this.frameworkBin(), '-x', precompiledTestPath)
-		processBuilder.directory(new File(modulePath))
-		def env = processBuilder.environment()
-		logger.info('Compiling precompiled test')
-		logger.info('Module path: ' + modulePath)
-		logger.info('Precompiled test path: ' + precompiledTestPath)
-		logger.info('ENV: ' + env)
 
-		def logPath = modulePath+ '/' + this.getFileName(testName) + '_' + 'TESTCOMPILE.LOG'
-		ProcessWrapper processWrapper = new ProcessWrapper(processBuilder, 'Compile UnitTest '+ testName, logPath)
-
-		return processWrapper.exec()
+		return this.configuration.compiler
+				.buildExecutable(this.configuration)
+				.addIncludePath(srcModulePath)//
+				.addIncludePath(testModulePath)
+				.addIncludePath(this.frameworkBin())
+				.setTargetAndBuild(precompiledTestPath)
+				.execute('Compile UnitTest {' + testName + '}')
 	}
 
 	private String frameworkBin() {
