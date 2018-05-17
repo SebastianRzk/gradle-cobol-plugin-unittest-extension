@@ -25,8 +25,8 @@ group = 'de.sebastianruziczka'
 version = '0.0.7'
 def realVersion = ''
 if (project.hasProperty("generateLatest")) {
-        realVersion = ' (' + version + ')'
-        version = 'latest'
+	realVersion = ' (' + version + ')'
+	version = 'latest'
 	println 'Publish: ' + version + realVersion
 }
 
