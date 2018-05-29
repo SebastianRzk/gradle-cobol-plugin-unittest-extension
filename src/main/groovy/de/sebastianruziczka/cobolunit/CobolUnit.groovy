@@ -123,9 +123,9 @@ class CobolUnit implements CobolTestFramework{
 	}
 
 	private TestFile parseProcessOutput(String processOutput, String testFileName) {
-		List<String> lines = Arrays.asList(testFileName, processOutput.split(System.getProperty('line.separator')))
+		List<String> lines = Arrays.asList(processOutput.split(System.getProperty('line.separator')))
 		OutputParser parser = new OutputParser()
-		return parser.parse(lines)
+		return parser.parse(testFileName, lines)
 	}
 
 	private String executeTest(String binModulePath, String execName) {
