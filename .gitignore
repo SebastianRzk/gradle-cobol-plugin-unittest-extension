@@ -2,6 +2,8 @@
 /build/
 /.project
 /.gradle
+/buildSrc/.gradle/
+/buildSrc/build
 /.settings
 .classpath
 /endToEndTest/
