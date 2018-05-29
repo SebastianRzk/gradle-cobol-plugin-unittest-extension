@@ -14,18 +14,25 @@ public class OutputParser {
 		TestFile result = new TestFile()
 		result.addName(testFileName + '(' + lines.get(2).trim() + ')')
 
-		for (int lineNumber = 3; lineNumber < lines.size(); lineNumber ++) {
+		def console = []
+		for (int lineNumber = 4; lineNumber < lines.size(); lineNumber ++) {
 
 			String actualLine = lines.get(lineNumber)
 
 			if (actualLine.startsWith('     PASS:   ')) {
 				String name = actualLine.substring('     PASS:   '.length()).trim()
-				result.addTestMethod(new TestMethod(name, TestMethodResult.SUCCESSFUL, ''))
+				result.addTestMethod(new TestMethod(name, TestMethodResult.SUCCESSFUL, '', console.join('\n')))
+				console = []
+				lineNumber ++
 			}
 			else if (actualLine.startsWith('**** FAIL:   ')) {
 				String name = actualLine.substring('**** FAIL:   '.length()).trim()
 				String compareResult = lines.get(lineNumber + 1)
-				result.addTestMethod(new TestMethod(name, TestMethodResult.FAILED, compareResult.trim()))
+				result.addTestMethod(new TestMethod(name, TestMethodResult.FAILED, compareResult.trim(), console.join('\n')))
+				console = []
+				lineNumber ++
+			}else {
+				console << actualLine
 			}
 		}
 		return result
