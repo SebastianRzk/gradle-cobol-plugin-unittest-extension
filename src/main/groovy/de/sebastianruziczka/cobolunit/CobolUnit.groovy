@@ -10,8 +10,6 @@ import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolTestFramework
 import de.sebastianruziczka.api.CobolUnitFrameworkProvider
 import de.sebastianruziczka.buildcycle.test.TestFile
-import de.sebastianruziczka.buildcycle.test.TestMethod
-import de.sebastianruziczka.buildcycle.test.TestMethodResult
 import de.sebastianruziczka.metainf.MetaInfPropertyResolver
 import de.sebastianruziczka.process.ProcessWrapper
 
@@ -125,25 +123,9 @@ class CobolUnit implements CobolTestFramework{
 	}
 
 	private TestFile parseProcessOutput(String processOutput, String testFileName) {
-		String[] lines = processOutput.split(System.getProperty('line.separator'))
-		if (!lines[1].equals('TEST SUITE:')){
-			throw new IllegalArgumentException('Could not parse cobol unit test output')
-		}
-
-		TestFile testFile = new TestFile()
-		testFile.addName(testFileName + '(' + lines[2].trim() + ')')
-		for (int lineNumber = 3; lineNumber < lines.length; lineNumber ++) {
-			if (lines[lineNumber].startsWith('     PASS:   ')) {
-				String name = lines[lineNumber].substring('     PASS:   '.length()).trim()
-				testFile.addTestMethod(new TestMethod(name, TestMethodResult.SUCCESSFUL, ''))
-			}
-			else if (lines[lineNumber].startsWith('**** FAIL:   ')) {
-				String name = lines[lineNumber].substring('**** FAIL:   '.length()).trim()
-				String compareResult = lines[lineNumber + 1]
-				testFile.addTestMethod(new TestMethod(name, TestMethodResult.FAILED, compareResult.trim()))
-			}
-		}
-		return testFile
+		List<String> lines = Arrays.asList(processOutput.split(System.getProperty('line.separator')))
+		OutputParser parser = new OutputParser()
+		return parser.parse(testFileName, lines)
 	}
 
 	private String executeTest(String binModulePath, String execName) {
