@@ -10,6 +10,7 @@ import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolTestFramework
 import de.sebastianruziczka.api.CobolUnitFrameworkProvider
 import de.sebastianruziczka.buildcycle.test.TestFile
+import de.sebastianruziczka.compiler.api.CompileJob
 import de.sebastianruziczka.metainf.MetaInfPropertyResolver
 import de.sebastianruziczka.process.ProcessWrapper
 
@@ -131,11 +132,14 @@ class CobolUnit implements CobolTestFramework{
 	private String executeTest(String binModulePath, String execName) {
 		def logFilePath = binModulePath + '/' + execName + '_TESTEXEC.LOG'
 
-		ProcessBuilder processBuilder = new ProcessBuilder(binModulePath + '/' + execName)
-		processBuilder.directory(new File(binModulePath))
-		logger.info('Executing test file: '+ binModulePath + '/' + execName)
+		ProcessWrapper processWrapper = new ProcessWrapper([
+			binModulePath + '/' + execName
+		], new File(binModulePath),  'Execute Unittest '+ execName, logFilePath)
 
-		ProcessWrapper processWrapper = new ProcessWrapper(processBuilder, 'Execute Unittest '+ execName, logFilePath)
+		if (this.configuration.unittestCodeCoverage) {
+			processWrapper.setEnvironmentVariable('COB_SET_TRACE', 'Y')
+		}
+
 		processWrapper.exec(true)
 		return processWrapper.processOutput()
 	}
@@ -152,14 +156,16 @@ class CobolUnit implements CobolTestFramework{
 
 	private int compileTest(String srcModulePath, String testModulePath, String testName) {
 		String precompiledTestPath = this.frameworkBin() + '/' + testName
-
-		return this.configuration.compiler
+		CompileJob job = this.configuration.compiler
 				.buildExecutable(this.configuration)
 				.addIncludePath(srcModulePath)//
 				.addIncludePath(testModulePath)
 				.addIncludePath(this.frameworkBin())
 				.setTargetAndBuild(precompiledTestPath)
-				.execute('Compile UnitTest {' + testName + '}')
+		if (this.configuration.unittestCodeCoverage) {
+			job = job.addCodeCoverageOption()
+		}
+		return job.execute('Compile UnitTest {' + testName + '}')
 	}
 
 	private String frameworkBin() {
