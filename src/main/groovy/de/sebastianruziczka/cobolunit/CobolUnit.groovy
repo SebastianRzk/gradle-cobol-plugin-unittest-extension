@@ -24,6 +24,7 @@ class CobolUnit implements CobolTestFramework{
 	private final static MAIN_FRAMEWORK_PROGRAMM =  'ZUTZCPC.CBL'
 	private final static DEFAULT_CONF_NAME = 'DEFAULT.CONF'
 	private String pluginName = null
+	private OutputParserTestCoverageDecorator testCoverageProvider;
 
 	@Override
 	void configure(CobolExtension configuration, Project project) {
@@ -126,6 +127,13 @@ class CobolUnit implements CobolTestFramework{
 	private TestFile parseProcessOutput(String processOutput, String testFileName) {
 		List<String> lines = Arrays.asList(processOutput.split(System.getProperty('line.separator')))
 		OutputParser parser = new OutputParser()
+		if (this.configuration.unittestCodeCoverage) {
+			if (this.testCoverageProvider == null) {
+				this.testCoverageProvider = new OutputParserTestCoverageDecorator(parser)
+			}
+			this.testCoverageProvider.parse(testFileName, lines)
+		}
+
 		return parser.parse(testFileName, lines)
 	}
 
