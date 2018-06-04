@@ -10,6 +10,7 @@ import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolTestFramework
 import de.sebastianruziczka.api.CobolUnitFrameworkProvider
 import de.sebastianruziczka.buildcycle.test.TestFile
+import de.sebastianruziczka.cobolunit.coverage.OutputParserTestCoverageDecorator
 import de.sebastianruziczka.compiler.api.CompileJob
 import de.sebastianruziczka.metainf.MetaInfPropertyResolver
 import de.sebastianruziczka.process.ProcessWrapper

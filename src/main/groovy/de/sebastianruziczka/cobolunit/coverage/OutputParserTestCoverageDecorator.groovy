@@ -1,6 +1,7 @@
-package de.sebastianruziczka.cobolunit
+package de.sebastianruziczka.cobolunit.coverage
 
 import de.sebastianruziczka.buildcycle.test.TestFile
+import de.sebastianruziczka.cobolunit.OutputParser
 
 class OutputParserTestCoverageDecorator {
 	private OutputParser parser;
