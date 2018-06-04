@@ -25,4 +25,12 @@ class OutputParserTestCoverageDecorator {
 		this.coverageOutput.put(testFileName, testcoverageLines)
 		return this.parser.parse(testFileName, outputLines)
 	}
+
+	public Collection<String> testCoverageFiles(){
+		return this.coverageOutput.keySet()
+	}
+
+	public List<String> getCoverageOutput(String fileName){
+		return this.coverageOutput.get(fileName)
+	}
 }

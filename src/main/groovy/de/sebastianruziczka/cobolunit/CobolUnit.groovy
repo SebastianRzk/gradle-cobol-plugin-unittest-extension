@@ -10,6 +10,7 @@ import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolTestFramework
 import de.sebastianruziczka.api.CobolUnitFrameworkProvider
 import de.sebastianruziczka.buildcycle.test.TestFile
+import de.sebastianruziczka.cobolunit.coverage.ComputeTestCoverageTask
 import de.sebastianruziczka.cobolunit.coverage.OutputParserTestCoverageDecorator
 import de.sebastianruziczka.compiler.api.CompileJob
 import de.sebastianruziczka.metainf.MetaInfPropertyResolver
@@ -31,6 +32,13 @@ class CobolUnit implements CobolTestFramework{
 	void configure(CobolExtension configuration, Project project) {
 		this.configuration = configuration
 		this.project = project
+
+		this.project.task('computeTestCoverage', type:ComputeTestCoverageTask){
+			doFirst{
+				testOuput = this.testCoverageProvider
+				conf = this.configuration
+			}
+		}
 	}
 
 	@Override
