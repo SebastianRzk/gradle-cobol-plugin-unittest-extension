@@ -13,6 +13,10 @@ class CobolCoverageFile {
 		this.methods.add(method)
 	}
 
+	public List<String> methods(){
+		return this.methods
+	}
+
 
 	@Override
 	public String toString() {

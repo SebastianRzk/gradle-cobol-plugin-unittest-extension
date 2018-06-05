@@ -29,16 +29,61 @@ class CobolCoverageMethod {
 		this.addLineStatus(line, CoverageStatus.follow_line)
 	}
 
+	public void setLineCoveredWithRelativeIndex(int line) {
+		this.addLineStatus(line + this.startLine, CoverageStatus.passed)
+	}
+
 	private void addLineStatus(int line, CoverageStatus status) {
 		int relativeLine = line - this.startLine
-		while(this.lines.size()< relativeLine) {
+
+		if (relativeLine < this.lines.size()) {
+			this.lines.set(relativeLine, status)
+			return
+		}
+
+		while(this.lines.size() < relativeLine) {
 			this.lines.add(CoverageStatus.not_passed)
 		}
+
 		this.lines.add(status)
+	}
+
+	protected List<CobolCoverageLine> methodStatus(){
+		println this.lines
+		List<CobolCoverageLine> result = new LinkedList<>()
+		CoverageStatus lastStatus = null
+		for (int i = this.startLine; i <= this.endLine; i++) {
+			int relativeIndex = i - startLine
+
+			if (relativeIndex >= this.lines.size()) {
+				result.add(new CobolCoverageLine(i, CoverageStatus.not_passed))
+				continue
+			}
+
+			CoverageStatus actualStatus = this.lines.get(relativeIndex)
+			if(actualStatus == CoverageStatus.passed) {
+				lastStatus = actualStatus
+				result.add(new CobolCoverageLine(i, actualStatus))
+				continue
+			} else if (actualStatus == CoverageStatus.not_passed) {
+				lastStatus = actualStatus
+				result.add(new CobolCoverageLine(i, actualStatus))
+				continue
+			}else if (actualStatus == CoverageStatus.follow_line) {
+				result.add(new CobolCoverageLine(i, lastStatus))
+				continue
+			}
+		}
+
+		return result
 	}
 
 	@Override
 	public String toString() {
 		return 'CobolCoverageMethod(' + this.name + ', start: ' + this.startLine + ', end: ' + this.endLine + '){\n\t' + this.lines.join('\n\t') + '\n}'
+	}
+
+	public String name() {
+		return this.name
 	}
 }

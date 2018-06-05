@@ -12,18 +12,24 @@ class SourceFileReader {
 		this.configuration = configuration
 	}
 
+	protected String[] fileContent(String fileName) {
+		File sourceFile = new File(configuration.absoluteSrcMainPath(fileName))
+		return sourceFile.text.split(System.getProperty('line.separator'))
+	}
+
 	public CobolCoverageFile read(String filename) {
 		String sourceFileName = filename.replace(this.configuration.unittestPostfix, '')
-		File sourceFile = new File(configuration.absoluteSrcMainPath(sourceFileName))
 
-		CobolCoverageMethod actualMethod = null
+		String[] srcFileContent = this.fileContent(sourceFileName)
+
 		CobolCoverageFile cobolFile = new CobolCoverageFile(sourceFileName)
+		CobolCoverageMethod actualMethod = null
 
 		boolean procedureDivision = false
 		int lineIndex = 0
 
 
-		for (String line : sourceFile.text.split(System.getProperty('line.separator'))) {
+		for (String line : srcFileContent) {
 			lineIndex ++
 			if (!procedureDivision) {
 				if (line.startsWith('       PROCEDURE DIVISION.')) {
