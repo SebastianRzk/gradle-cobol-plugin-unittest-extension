@@ -10,6 +10,7 @@ The new source code if fully backward compatible, but enables new features:
 
 * No redundant configuration (the plugin provides a default-configuration for all tests)
 * Fast and simple test exectuion by gradle with the task _:cobolUnit_
+* Simple testcoverage computation with task _cobolUnit_ _computeTestCoverage_ . This task generates a cobertura-testcoverage xml file.
 
 
 ## Gradle-cobol environment
@@ -44,7 +45,7 @@ Or hardcode specific versions in your build.gradle (not preferred):
 
     buildscript {
     	 dependencies {
-    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: '0.0.8'
+    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: '0.0.9'
     	}
     }
 

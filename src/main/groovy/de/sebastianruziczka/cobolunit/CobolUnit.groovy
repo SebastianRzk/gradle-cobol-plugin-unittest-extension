@@ -10,6 +10,11 @@ import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolTestFramework
 import de.sebastianruziczka.api.CobolUnitFrameworkProvider
 import de.sebastianruziczka.buildcycle.test.TestFile
+import de.sebastianruziczka.cobolunit.coverage.ComputeTestCoverageTask
+import de.sebastianruziczka.cobolunit.coverage.FixedFileConverter
+import de.sebastianruziczka.cobolunit.coverage.OutputParserTestCoverageDecorator
+import de.sebastianruziczka.cobolunit.coverage.UnitTestLineFixer
+import de.sebastianruziczka.compiler.api.CompileJob
 import de.sebastianruziczka.metainf.MetaInfPropertyResolver
 import de.sebastianruziczka.process.ProcessWrapper
 
@@ -23,11 +28,23 @@ class CobolUnit implements CobolTestFramework{
 	private final static MAIN_FRAMEWORK_PROGRAMM =  'ZUTZCPC.CBL'
 	private final static DEFAULT_CONF_NAME = 'DEFAULT.CONF'
 	private String pluginName = null
+	private OutputParserTestCoverageDecorator testCoverageProvider;
 
 	@Override
 	void configure(CobolExtension configuration, Project project) {
 		this.configuration = configuration
 		this.project = project
+
+		this.project.task('computeTestCoverage', type:ComputeTestCoverageTask){
+
+			group: 'COBOL Development'
+			description: 'Generates a testcoverage xml (cobertura-style)'
+
+			doFirst{
+				testOuput = this.testCoverageProvider
+				conf = this.configuration
+			}
+		}
 	}
 
 	@Override
@@ -114,6 +131,13 @@ class CobolUnit implements CobolTestFramework{
 
 		logger.info('Preprocess Test: ' + testName)
 		this.preprocessTest(srcName, testName, null)
+
+		if(this.configuration.unittestCodeCoverage) {
+			String fixedTestFileName = new FixedFileConverter(this.configuration).fromOriginalToFixed(testName)
+			new UnitTestLineFixer().fix(this.frameworkBin() + '/' + testName, this.frameworkBin() + '/' + fixedTestFileName)
+			testName = fixedTestFileName
+		}
+
 		logger.info('Compile Test: ' + testName)
 		this.compileTest(srcModulePath, testModulePath, testName)
 		logger.info('Run Test: ' + testName)
@@ -125,17 +149,27 @@ class CobolUnit implements CobolTestFramework{
 	private TestFile parseProcessOutput(String processOutput, String testFileName) {
 		List<String> lines = Arrays.asList(processOutput.split(System.getProperty('line.separator')))
 		OutputParser parser = new OutputParser()
+		if (this.configuration.unittestCodeCoverage) {
+			if (this.testCoverageProvider == null) {
+				this.testCoverageProvider = new OutputParserTestCoverageDecorator(parser)
+			}
+			this.testCoverageProvider.parse(testFileName, lines)
+		}
+
 		return parser.parse(testFileName, lines)
 	}
 
 	private String executeTest(String binModulePath, String execName) {
 		def logFilePath = binModulePath + '/' + execName + '_TESTEXEC.LOG'
 
-		ProcessBuilder processBuilder = new ProcessBuilder(binModulePath + '/' + execName)
-		processBuilder.directory(new File(binModulePath))
-		logger.info('Executing test file: '+ binModulePath + '/' + execName)
+		ProcessWrapper processWrapper = new ProcessWrapper([
+			binModulePath + '/' + execName
+		], new File(binModulePath),  'Execute Unittest '+ execName, logFilePath)
 
-		ProcessWrapper processWrapper = new ProcessWrapper(processBuilder, 'Execute Unittest '+ execName, logFilePath)
+		if (this.configuration.unittestCodeCoverage) {
+			processWrapper.setEnvironmentVariable('COB_SET_TRACE', 'Y')
+		}
+
 		processWrapper.exec(true)
 		return processWrapper.processOutput()
 	}
@@ -152,14 +186,16 @@ class CobolUnit implements CobolTestFramework{
 
 	private int compileTest(String srcModulePath, String testModulePath, String testName) {
 		String precompiledTestPath = this.frameworkBin() + '/' + testName
-
-		return this.configuration.compiler
+		CompileJob job = this.configuration.compiler
 				.buildExecutable(this.configuration)
 				.addIncludePath(srcModulePath)//
 				.addIncludePath(testModulePath)
 				.addIncludePath(this.frameworkBin())
 				.setTargetAndBuild(precompiledTestPath)
-				.execute('Compile UnitTest {' + testName + '}')
+		if (this.configuration.unittestCodeCoverage) {
+			job = job.addCodeCoverageOption()
+		}
+		return job.execute('Compile UnitTest {' + testName + '}')
 	}
 
 	private String frameworkBin() {
