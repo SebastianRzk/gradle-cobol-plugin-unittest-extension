@@ -4,6 +4,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 import de.sebastianruziczka.CobolExtension
+import de.sebastianruziczka.cobolunit.coverage.report.XMLReportWriter
 
 class ComputeTestCoverageTask extends DefaultTask{
 

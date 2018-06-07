@@ -1,4 +1,4 @@
-package de.sebastianruziczka.cobolunit.coverage
+package de.sebastianruziczka.cobolunit.coverage.report
 
 import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageFile
@@ -28,14 +28,16 @@ class XMLReportWriter {
 		 * version="4.5.1">
 		 */
 
-		double lineRate = 0.5
-		int linesCovered = 5
-		int linesValid = 7
+		LineRateComputer statistiker = new LineRateComputer()
+		double lineRate = statistiker.compute(coveredFiles)
+		HitsMisses result = statistiker.count(coveredFiles)
+		int linesCovered = result.hits
+		int linesValid = result.hits + result.misses
 
 		def xmlWriter = new StringWriter()
 		def xmlMarkup = new MarkupBuilder(xmlWriter)
 
-		Map<String, List<CobolCoverageFile>> packages = this.resolvePackages(coveredFiles)
+		Map<String, List<CobolCoverageFile>> cobolPackages = this.resolvePackages(coveredFiles)
 		xmlMarkup.
 				'coverage'('branch-rage':'0',
 				'branch-covered':'0',
@@ -50,29 +52,30 @@ class XMLReportWriter {
 					'sources'{
 						source this.configuration.projectFileResolver(this.configuration.srcMainPath).absolutePath
 					}
-					for (String packageName : packages.keySet()) {
-						'package' ('name': packageName){
-							'classes'{
-								for (CobolCoverageFile file : packages.getAt(packageName)) {
-									'class'('name': file.name()) {
-										//'methods':'',
-										'lines' {
-											for (CobolCoverageMethod method : file.methods()) {
-												int methodOffset = method.startLine
-												for (CobolCoverageLine coveredLine : method.methodStatus()) {
-													if (coveredLine.status() == CoverageStatus.passed) {
-														'line' ('hits': '1', 'number' : coveredLine.lineNumber() + methodOffset){}
-													} else {
-														'line' ('hits': '0', 'number' : coveredLine.lineNumber() + methodOffset){}
+					'packages' {
+						for (String packageName : cobolPackages.keySet()) {
+							'package' ('branch-rate': '0', 'complexity': '0', 'line-rate': statistiker.compute(cobolPackages.get(packageName)), 'name': packageName){
+								'classes'{
+									for (CobolCoverageFile file : cobolPackages.getAt(packageName)) {
+										'class'('branch-rate': '0', 'complexity': '0', 'line-rate': statistiker.compute(file),'name': file.name()) {
+											//'methods':'',
+											'lines' {
+												for (CobolCoverageMethod method : file.methods()) {
+													int methodOffset = method.startLine
+													for (CobolCoverageLine coveredLine : method.methodStatus()) {
+														if (coveredLine.status() == CoverageStatus.passed) {
+															'line' ('hits': '1', 'number' : coveredLine.lineNumber() + methodOffset){}
+														} else {
+															'line' ('hits': '0', 'number' : coveredLine.lineNumber() + methodOffset){}
 
+														}
 													}
 												}
 											}
 										}
 									}
 								}
-							}
-						}
+							}}
 					}
 				}
 
