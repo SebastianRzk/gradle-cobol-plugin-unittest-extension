@@ -4,6 +4,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 import de.sebastianruziczka.CobolExtension
+import de.sebastianruziczka.cobolunit.CobolUnit
 import de.sebastianruziczka.cobolunit.coverage.report.XMLReportWriter
 
 class ComputeTestCoverageTask extends DefaultTask{
@@ -18,7 +19,8 @@ class ComputeTestCoverageTask extends DefaultTask{
 		for (String file : this.testOuput.testCoverageFiles()) {
 			files << testCoverageResolver.resolve(file, this.testOuput.getCoverageOutput(file))
 		}
-		new XMLReportWriter(this.conf).writeToXML(files)
-		println 'Chello'
+		String xml = new XMLReportWriter(this.conf).writeToXML(files)
+		File xmlOutput = new File(this.conf.absoluteUnitTestFrameworkPath(CobolUnit.class.getSimpleName()) + '/cov.xml')
+		xmlOutput << xml
 	}
 }

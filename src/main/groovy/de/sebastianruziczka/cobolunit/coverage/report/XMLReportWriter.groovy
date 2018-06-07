@@ -48,7 +48,8 @@ class XMLReportWriter {
 				'lines-valid': linesValid + '',
 				'timestamp': new Date().getTime() + '',
 				'version': this.versionNumber() + '') {
-
+					mkp.comment 'Build by ' + this.versionNumber() + ' further reading: https://github.com/RosesTheN00b/gradle-cobol-plugin-unittest-extension'
+					mkp.comment 'Based on https://raw.githubusercontent.com/cobertura/web/master/htdocs/xml/coverage-04.dtd '
 					'sources'{
 						source this.configuration.projectFileResolver(this.configuration.srcMainPath).absolutePath
 					}
@@ -78,9 +79,7 @@ class XMLReportWriter {
 							}}
 					}
 				}
-
-		println xmlWriter
-		println 'CHalo'
+		return xmlWriter
 	}
 
 	private Map<String, List<CobolCoverageFile>> resolvePackages(List<CobolCoverageFile> files){
