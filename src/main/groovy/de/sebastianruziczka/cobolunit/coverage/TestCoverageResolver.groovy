@@ -12,11 +12,12 @@ class TestCoverageResolver {
 	}
 
 
-	public void resolve(String file, List<String> logOuput) {
+	public CobolCoverageFile resolve(String file, List<String> logOuput) {
 		CobolCoverageFile coverageFile = new SourceFileReader(this.configuration).read(file)
 
 		TestCoverageMerger merger = new TestCoverageMerger()
 		merger.merge(coverageFile, logOuput)
 		println coverageFile.toString()
+		return coverageFile
 	}
 }

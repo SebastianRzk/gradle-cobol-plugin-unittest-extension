@@ -20,6 +20,10 @@ public class CobolCoverageFile {
 		return this.methods;
 	}
 
+	public String name() {
+		return this.name;
+	}
+
 	@Override
 	public String toString() {
 		return "CobolCoverageFile(" + this.name + ") { \n\t"

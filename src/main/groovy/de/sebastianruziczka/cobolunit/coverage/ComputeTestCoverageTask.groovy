@@ -13,8 +13,11 @@ class ComputeTestCoverageTask extends DefaultTask{
 	@TaskAction
 	public void computeTestCoverage() {
 		TestCoverageResolver testCoverageResolver = new TestCoverageResolver(this.conf)
+		def files = []
 		for (String file : this.testOuput.testCoverageFiles()) {
-			testCoverageResolver.resolve(file, this.testOuput.getCoverageOutput(file))
+			files << testCoverageResolver.resolve(file, this.testOuput.getCoverageOutput(file))
 		}
+		new XMLReportWriter(this.conf).writeToXML(files)
+		println 'Chello'
 	}
 }

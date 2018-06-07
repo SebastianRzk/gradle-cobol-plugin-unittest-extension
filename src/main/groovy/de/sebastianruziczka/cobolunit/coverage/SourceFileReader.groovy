@@ -22,7 +22,7 @@ class SourceFileReader {
 
 		String[] srcFileContent = this.fileContent(sourceFileName)
 
-		CobolCoverageFile cobolFile = new CobolCoverageFile(sourceFileName)
+		CobolCoverageFile cobolFile = new CobolCoverageFile(new FixedFileConverter(this.configuration).fromFixedToRelative(sourceFileName))
 		CobolCoverageMethod actualMethod = null
 
 		boolean procedureDivision = false
