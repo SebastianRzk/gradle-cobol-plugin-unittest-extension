@@ -43,8 +43,6 @@ public class TestCoverageMergerTest {
 
 		component_under_test.merge(file, Arrays.asList(this.simpleLogOuput().split("\n")));
 
-		System.out.println(method.methodStatus().toString());
-
 		assertLines(method, 1, 2, 3, 4, 5, 6);
 		assertStatus(method, passed, not_passed, not_passed, not_passed, passed, not_passed);
 	}
@@ -63,8 +61,6 @@ public class TestCoverageMergerTest {
 		TestCoverageMerger component_under_test = new TestCoverageMerger();
 
 		component_under_test.merge(file, Arrays.asList(this.complexLogOuput().split("\n")));
-
-		System.out.println(method1000.methodStatus().toString());
 
 		assertLines(method1000, 100, 101, 102, 103, 104);
 		assertStatus(method1000, passed, not_passed, not_passed, not_passed, not_passed);
@@ -87,8 +83,6 @@ public class TestCoverageMergerTest {
 		TestCoverageMerger component_under_test = new TestCoverageMerger();
 
 		component_under_test.merge(file, Arrays.asList(this.complexLogOuput().split("\n")));
-
-		System.out.println(method1000.methodStatus().toString());
 
 		assertLines(method1000, 100, 101, 102, 103, 104);
 		assertStatus(method1000, passed, not_passed, not_passed, not_passed, not_passed);

@@ -140,7 +140,6 @@ class SourceFileReaderTest {
 		CobolCoverageMethod resultMethod = result.methods().get(0)
 		resultMethod.setLineCoveredWithRelativeIndex(0)
 
-		println resultMethod.methodStatus()
 		assertThat(result.methods().size()).isEqualTo(1)
 		assertThat(resultMethod.name()).isEqualTo("2000-COMPUTE-GREETING")
 		assertLines(resultMethod, 17, 18, 19)

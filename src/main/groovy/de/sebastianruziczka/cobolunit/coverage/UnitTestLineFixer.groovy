@@ -19,13 +19,11 @@ class UnitTestLineFixer {
 			String actualLine = lines[i]
 			if (actualLine.trim().equals('.') && lastLine != null ) {
 				if ( lastLine.length() > 4) {
-					println 'skipping dot'
 					lastLine = lastLine[0..-2] + '.'
 					output << lastLine + System.getProperty('line.separator')
 					lastLine = null
 					continue
 				}
-				println 'skipping dot'
 				output << actualLine + System.getProperty('line.separator')
 				lastLine = null
 				continue

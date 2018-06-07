@@ -17,7 +17,6 @@ class TestCoverageResolver {
 
 		TestCoverageMerger merger = new TestCoverageMerger()
 		merger.merge(coverageFile, logOuput)
-		println coverageFile.toString()
 		return coverageFile
 	}
 }

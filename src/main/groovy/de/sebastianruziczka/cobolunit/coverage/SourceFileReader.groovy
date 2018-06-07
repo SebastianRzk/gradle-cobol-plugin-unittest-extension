@@ -42,17 +42,13 @@ class SourceFileReader {
 				actualMethod = new CobolCoverageMethod(line.trim()[0..-2], lineIndex + 1)
 				continue
 			}
-			println "lline: "+(lineIndex)+': '+line
-
 			if (line.isAllWhitespace()) {
 				actualMethod.addEmptyLine(lineIndex)
-				println 'whitespace'
 				continue
 			}
 
 			if (line.getAt(7) == '*') {
 				actualMethod.addComment(lineIndex)
-				println 'comment'
 				continue
 			}
 

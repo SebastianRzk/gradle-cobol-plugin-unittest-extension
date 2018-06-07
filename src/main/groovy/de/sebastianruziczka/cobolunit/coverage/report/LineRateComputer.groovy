@@ -18,7 +18,6 @@ class LineRateComputer {
 	}
 
 	private double computeResult(HitsMisses result) {
-		println result.hits + '////' + result.misses
 		if (result.hits == 0) {
 			return 0.0
 		}
