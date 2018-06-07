@@ -13,7 +13,7 @@ class SourceFileReader {
 	}
 
 	protected String[] fileContent(String fileName) {
-		File sourceFile = new File(configuration.absoluteSrcMainPath(fileName))
+		File sourceFile = new File(new FixedFileConverter(this.configuration).fromFixedToOriginal(fileName))
 		return sourceFile.text.split(System.getProperty('line.separator'))
 	}
 

@@ -25,11 +25,11 @@ public class TestCoverageMergerTest {
 
 	private String complexLogOuput() {
 		return "Program-Id: Main             Statement: MOVE                   Line: 01\n" + //
-				"Program-Id: Main             Paragraph: 1000-COMPUTE-GREETING  Line: 02\n" + //
-				"Program-Id: Main             Statement: STRING                 Line: 03\n" + //
-				"Program-Id: Main             Paragraph: 2000-COMPUTE-GREETING  Line: 20\n" + //
-				"Program-Id: Main             Statement: STRING                 Line: 22\n" + //
-				"Program-Id: Main             Statement: IF                     Line: 23\n";
+				"Program-Id: Main             Paragraph: 1000-COMPUTE-GREETING  Line: 1000\n" + //
+				"Program-Id: Main             Statement: STRING                 Line: 1001\n" + //
+				"Program-Id: Main             Paragraph: 2000-COMPUTE-GREETING  Line: 1101\n" + //
+				"Program-Id: Main             Statement: STRING                 Line: 1103\n" + //
+				"Program-Id: Main             Statement: IF                     Line: 1104\n";
 	}
 
 	@Test
@@ -51,6 +51,30 @@ public class TestCoverageMergerTest {
 
 	@Test
 	public void testParse_shouldSwitchParagraphs() {
+		CobolCoverageFile file = new CobolCoverageFile("My Cool File");
+		CobolCoverageMethod method1000 = new CobolCoverageMethod("1000-COMPUTE-GREETING", 100);
+		method1000.setEnd(104);
+		file.addMethod(method1000);
+
+		CobolCoverageMethod method2000 = new CobolCoverageMethod("2000-COMPUTE-GREETING", 200);
+		method2000.setEnd(204);
+		file.addMethod(method2000);
+
+		TestCoverageMerger component_under_test = new TestCoverageMerger();
+
+		component_under_test.merge(file, Arrays.asList(this.complexLogOuput().split("\n")));
+
+		System.out.println(method1000.methodStatus().toString());
+
+		assertLines(method1000, 100, 101, 102, 103, 104);
+		assertStatus(method1000, passed, not_passed, not_passed, not_passed, not_passed);
+
+		assertLines(method2000, 200, 201, 202, 203, 204);
+		assertStatus(method2000, not_passed, passed, passed, not_passed, not_passed);
+	}
+
+	@Test
+	public void testParse_shouldJu() {
 		CobolCoverageFile file = new CobolCoverageFile("My Cool File");
 		CobolCoverageMethod method1000 = new CobolCoverageMethod("1000-COMPUTE-GREETING", 100);
 		method1000.setEnd(104);

@@ -11,7 +11,9 @@ import de.sebastianruziczka.api.CobolTestFramework
 import de.sebastianruziczka.api.CobolUnitFrameworkProvider
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.cobolunit.coverage.ComputeTestCoverageTask
+import de.sebastianruziczka.cobolunit.coverage.FixedFileConverter
 import de.sebastianruziczka.cobolunit.coverage.OutputParserTestCoverageDecorator
+import de.sebastianruziczka.cobolunit.coverage.UnitTestLineFixer
 import de.sebastianruziczka.compiler.api.CompileJob
 import de.sebastianruziczka.metainf.MetaInfPropertyResolver
 import de.sebastianruziczka.process.ProcessWrapper
@@ -125,6 +127,13 @@ class CobolUnit implements CobolTestFramework{
 
 		logger.info('Preprocess Test: ' + testName)
 		this.preprocessTest(srcName, testName, null)
+
+		if(this.configuration.unittestCodeCoverage) {
+			String fixedTestFileName = new FixedFileConverter(this.configuration).fromOriginalToFixed(testName)
+			new UnitTestLineFixer().fix(this.frameworkBin() + '/' + testName, this.frameworkBin() + '/' + fixedTestFileName)
+			testName = fixedTestFileName
+		}
+
 		logger.info('Compile Test: ' + testName)
 		this.compileTest(srcModulePath, testModulePath, testName)
 		logger.info('Run Test: ' + testName)

@@ -88,4 +88,12 @@ public class CobolCoverageMethod {
 	public String name() {
 		return this.name;
 	}
+
+	public int startLine() {
+		return this.startLine;
+	}
+
+	public int endLine() {
+		return this.endLine;
+	}
 }

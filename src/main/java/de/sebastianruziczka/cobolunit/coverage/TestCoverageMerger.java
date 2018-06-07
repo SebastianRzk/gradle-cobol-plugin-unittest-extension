@@ -10,30 +10,51 @@ class TestCoverageMerger {
 	public CobolCoverageFile merge(CobolCoverageFile file, List<String> coverageOuptut) {
 
 		CobolCoverageMethod actualMethod = null;
-		int actualMethodOffset = 0;
+		int offsetDifference = -1;
 		for (String line : coverageOuptut) {
+			int tracedLineNumber = getTraceNumberFrom(line);
 
-			if ("Paragraph:".equals(line.substring(29, 39))) {
-				actualMethod = getMethodForLine(line, file);
-				actualMethodOffset = getTraceNumberFrom(line) + 1;
+			if (offsetDifference == -1 && "Paragraph:".equals(line.substring(29, 39))) {
+				actualMethod = getMethodForName(line, file);
+				if (actualMethod != null) {
+					offsetDifference = tracedLineNumber - actualMethod.startLine() + 1;
+				}
 				continue;
 			}
+
+			if (offsetDifference == -1 || "Paragraph:".equals(line.substring(29, 39))) {
+				continue;
+			}
+			actualMethod = getMethodForLineNumber(tracedLineNumber - offsetDifference, file);
 
 			if (actualMethod == null) {
 				continue;
 			}
-			int tracedLineNumber = getTraceNumberFrom(line);
-			actualMethod.setLineCoveredWithRelativeIndex(tracedLineNumber - actualMethodOffset);
+			actualMethod
+					.setLineCoveredWithRelativeIndex(tracedLineNumber - offsetDifference - actualMethod.startLine());
 		}
 
 		return file;
+
+	}
+
+	private CobolCoverageMethod getMethodForLineNumber(int lineNumber, CobolCoverageFile file) {
+		for (CobolCoverageMethod method : file.methods()) {
+			if (lineNumber >= method.startLine() && lineNumber <= method.endLine()) {
+				return method;
+			}
+		}
+		return null;
 	}
 
 	private int getTraceNumberFrom(String line) {
-		return Integer.parseInt(line.substring(69, 71));
+		if (line.length() < 70) {
+			return -1;
+		}
+		return Integer.parseInt(line.substring(69).trim());
 	}
 
-	private CobolCoverageMethod getMethodForLine(String line, CobolCoverageFile file) {
+	private CobolCoverageMethod getMethodForName(String line, CobolCoverageFile file) {
 		String methodName = line.substring(40, 63).trim();
 		for (CobolCoverageMethod method : file.methods()) {
 			if (method.name().equals(methodName)) {
