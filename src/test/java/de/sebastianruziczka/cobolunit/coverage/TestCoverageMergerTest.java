@@ -34,7 +34,16 @@ public class TestCoverageMergerTest {
 
 	private String openCobol11Ouput() {
 		return "PROGRAM-ID: Main: 1000-COMPUTE-GREETING\n"//
-				+ "PROGRAM-ID: Main 	Line: 1001 	Statement: STRING\n" //
+				+ "PROGRAM-ID: Main 	Line: 1000 	Statement: STRING\n" //
+				+ "PROGRAM-ID: Main: 2000-COMPUTE-GREETING\n"//
+				+ "PROGRAM-ID: Main 	Line: 1100 	Statement: STRING\n"
+				+ "PROGRAM-ID: Main 	Line: 1102 	Statement: DISPLAY\n"
+				+ "PROGRAM-ID: Main 	Line: 1103 	Statement: DISPLAY\n  \n";
+	}
+
+	private String openCobol11OuputWithMethodOffset() {
+		return "PROGRAM-ID: Main: 1000-COMPUTE-GREETING\n"//
+				+ "PROGRAM-ID: Main 	Line: 1003 	Statement: STRING\n" //
 				+ "PROGRAM-ID: Main: 2000-COMPUTE-GREETING\n"//
 				+ "PROGRAM-ID: Main 	Line: 1101 	Statement: STRING\n"
 				+ "PROGRAM-ID: Main 	Line: 1103 	Statement: DISPLAY\n"
@@ -97,7 +106,31 @@ public class TestCoverageMergerTest {
 		assertStatus(method1000, passed, not_passed, not_passed, not_passed, not_passed);
 
 		assertLines(method2000, 200, 201, 202, 203, 204);
+		assertStatus(method2000, passed, not_passed, passed, passed, not_passed);
+	}
+
+	@Test
+	public void testParse_shouldParseOpenCobol11Output_andFixCommentsBeforeFirstStatement() {
+		CobolCoverageFile file = new CobolCoverageFile("My Cool File");
+		CobolCoverageMethod method1000 = new CobolCoverageMethod("1000-COMPUTE-GREETING", 100);
+		method1000.setEnd(104);
+		method1000.addComment(100);
+		method1000.addEmptyLine(101);
+		file.addMethod(method1000);
+
+		CobolCoverageMethod method2000 = new CobolCoverageMethod("2000-COMPUTE-GREETING", 200); //
+		method2000.setEnd(204);
+		file.addMethod(method2000);
+
+		TestCoverageMerger component_under_test = new TestCoverageMerger();
+
+		component_under_test.merge(file, Arrays.asList(this.openCobol11OuputWithMethodOffset().split("\n")));
+		assertLines(method1000, 102, 103, 104);
+		assertStatus(method1000, passed, not_passed, not_passed);
+
+		assertLines(method2000, 200, 201, 202, 203, 204);
 		assertStatus(method2000, passed, passed, not_passed, passed, not_passed);
+
 	}
 
 	private void assertLines(CobolCoverageMethod method, int... lines) {

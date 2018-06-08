@@ -21,10 +21,19 @@ class TestCoverageMerger {
 				actualMethod = getMethodForName(this.traceMode.parseParagraphName(line), file);
 				if (actualMethod != null) {
 					offsetDifference = tracedLineNumber - actualMethod.startLine() + 1;
+					if (this.traceMode == CobolTraceMode.gnucobol1) {// Fix if first statement is not in first line
+						offsetDifference = offsetDifference - actualMethod.firstStatement();
+					}
 				}
 				continue;
 			}
-
+			System.out.println("-------------------------_");
+			System.out.println("-------------------------_");
+			System.out.println("-------------------------_");
+			System.out.println(line + ">>>" + coverageOuptut.get(i + 1));
+			System.out.println(tracedLineNumber);
+			System.out.println("Offset " + offsetDifference);
+			System.out.println("traced: " + (tracedLineNumber - offsetDifference));
 			if (offsetDifference == -1 || this.traceMode.isParagraph(line)) {
 				continue;
 			}
