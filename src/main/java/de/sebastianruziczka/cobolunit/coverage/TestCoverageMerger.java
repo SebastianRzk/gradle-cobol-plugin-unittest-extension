@@ -2,10 +2,14 @@ package de.sebastianruziczka.cobolunit.coverage;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageFile;
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageMethod;
 
 class TestCoverageMerger {
+	private static final Logger LOGGER = LoggerFactory.getLogger(TestCoverageMerger.class.getName());
 	private CobolTraceMode traceMode = null;
 
 	public CobolCoverageFile merge(CobolCoverageFile file, List<String> coverageOuptut) {
@@ -27,13 +31,13 @@ class TestCoverageMerger {
 				}
 				continue;
 			}
-			System.out.println("-------------------------_");
-			System.out.println("-------------------------_");
-			System.out.println("-------------------------_");
-			System.out.println(line + ">>>" + coverageOuptut.get(i + 1));
-			System.out.println(tracedLineNumber);
-			System.out.println("Offset " + offsetDifference);
-			System.out.println("traced: " + (tracedLineNumber - offsetDifference));
+
+			LOGGER.debug("-------------------------_");
+			LOGGER.debug(line + ">>>" + coverageOuptut.get(i + 1));
+			LOGGER.debug(tracedLineNumber + "");
+			LOGGER.debug("Offset " + offsetDifference);
+			LOGGER.debug("traced: " + (tracedLineNumber - offsetDifference));
+
 			if (offsetDifference == -1 || this.traceMode.isParagraph(line)) {
 				continue;
 			}
@@ -62,6 +66,7 @@ class TestCoverageMerger {
 	private int getTraceNumberFrom(String line, String followingLine) {
 		if (this.traceMode == null) {
 			this.traceMode = CobolTraceMode.getTraceModeFor(line);
+			LOGGER.info("INIT Tracemode: " + this.traceMode);
 		}
 		return this.traceMode.getLineNumberFor(line, followingLine);
 	}
