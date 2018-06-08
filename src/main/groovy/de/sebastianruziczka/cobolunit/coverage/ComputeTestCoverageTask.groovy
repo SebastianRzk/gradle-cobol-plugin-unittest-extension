@@ -20,7 +20,7 @@ class ComputeTestCoverageTask extends DefaultTask{
 			files << testCoverageResolver.resolve(file, this.testOuput.getCoverageOutput(file))
 		}
 		String xml = new XMLReportWriter(this.conf).writeToXML(files)
-		File xmlOutput = new File(this.conf.absoluteUnitTestFrameworkPath(CobolUnit.class.getSimpleName()) + '/cov.xml')
+		File xmlOutput = new File(this.conf.absoluteUnitTestFrameworkPath(CobolUnit.class.getSimpleName()) + '/coverage.xml')
 		xmlOutput << xml
 	}
 }

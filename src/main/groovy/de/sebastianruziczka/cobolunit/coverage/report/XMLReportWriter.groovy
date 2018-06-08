@@ -58,7 +58,7 @@ class XMLReportWriter {
 							'package' ('branch-rate': '0', 'complexity': '0', 'line-rate': statistiker.compute(cobolPackages.get(packageName)), 'name': packageName){
 								'classes'{
 									for (CobolCoverageFile file : cobolPackages.getAt(packageName)) {
-										'class'('branch-rate': '0', 'complexity': '0', 'line-rate': statistiker.compute(file),'name': file.name()) {
+										'class'('branch-rate': '0', 'complexity': '0', 'line-rate': statistiker.compute(file),'filename': file.name(), 'name': new File(file.name()).getName()) {
 											//'methods':'',
 											'lines' {
 												for (CobolCoverageMethod method : file.methods()) {
