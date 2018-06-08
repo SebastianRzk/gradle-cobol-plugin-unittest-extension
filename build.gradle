@@ -28,7 +28,7 @@ dependencies {
 
 def applicationName = "CobolPluginUnitTestExtension"
 group = 'de.sebastianruziczka'
-version = '0.0.13'
+version = '0.0.14'
 def realVersion = ''
 if (project.hasProperty("generateLatest")) {
 	realVersion = ' (' + version + ')'
