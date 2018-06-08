@@ -16,7 +16,7 @@ class OutputParserTestCoverageDecorator {
 		List<String> outputLines = new LinkedList<>()
 		List<String> testcoverageLines = new LinkedList<>()
 		for (String line : lines) {
-			if(line.startsWith('Program-Id: ')) {
+			if(line.startsWith('Program-Id: ') || line.startsWith('PROGRAM-ID:')) {
 				testcoverageLines << line
 			}else {
 				outputLines << line
