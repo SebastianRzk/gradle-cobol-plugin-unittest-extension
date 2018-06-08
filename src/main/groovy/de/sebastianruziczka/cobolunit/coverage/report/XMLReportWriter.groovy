@@ -59,7 +59,7 @@ class XMLReportWriter {
 								'classes'{
 									for (CobolCoverageFile file : cobolPackages.getAt(packageName)) {
 										'class'('branch-rate': '0', 'complexity': '0', 'line-rate': statistiker.compute(file),'filename': file.name(), 'name': new File(file.name()).getName()) {
-											//'methods':'',
+											'methods' {}
 											'lines' {
 												for (CobolCoverageMethod method : file.methods()) {
 													int methodOffset = method.startLine
@@ -68,7 +68,6 @@ class XMLReportWriter {
 															'line' ('hits': '1', 'number' : coveredLine.lineNumber() + methodOffset){}
 														} else {
 															'line' ('hits': '0', 'number' : coveredLine.lineNumber() + methodOffset){}
-
 														}
 													}
 												}
@@ -76,7 +75,8 @@ class XMLReportWriter {
 										}
 									}
 								}
-							}}
+							}
+						}
 					}
 				}
 		return xmlWriter
