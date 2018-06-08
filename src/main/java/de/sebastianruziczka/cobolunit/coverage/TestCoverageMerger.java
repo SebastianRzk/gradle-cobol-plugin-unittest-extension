@@ -6,23 +6,35 @@ import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageFile;
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageMethod;
 
 class TestCoverageMerger {
+	private CobolTraceMode traceMode = null;
 
 	public CobolCoverageFile merge(CobolCoverageFile file, List<String> coverageOuptut) {
 
 		CobolCoverageMethod actualMethod = null;
 		int offsetDifference = -1;
-		for (String line : coverageOuptut) {
-			int tracedLineNumber = getTraceNumberFrom(line);
+		for (int i = 0; i < coverageOuptut.size() - 1; i++) {
+			String line = coverageOuptut.get(i);
 
-			if (offsetDifference == -1 && "Paragraph:".equals(line.substring(29, 39))) {
-				actualMethod = getMethodForName(line, file);
+			int tracedLineNumber = getTraceNumberFrom(line, coverageOuptut.get(i + 1));
+
+			if (offsetDifference == -1 && this.traceMode.isParagraph(line)) {
+				actualMethod = getMethodForName(this.traceMode.parseParagraphName(line), file);
 				if (actualMethod != null) {
 					offsetDifference = tracedLineNumber - actualMethod.startLine() + 1;
+					if (this.traceMode == CobolTraceMode.gnucobol1) {// Fix if first statement is not in first line
+						offsetDifference = offsetDifference - actualMethod.firstStatement();
+					}
 				}
 				continue;
 			}
-
-			if (offsetDifference == -1 || "Paragraph:".equals(line.substring(29, 39))) {
+			System.out.println("-------------------------_");
+			System.out.println("-------------------------_");
+			System.out.println("-------------------------_");
+			System.out.println(line + ">>>" + coverageOuptut.get(i + 1));
+			System.out.println(tracedLineNumber);
+			System.out.println("Offset " + offsetDifference);
+			System.out.println("traced: " + (tracedLineNumber - offsetDifference));
+			if (offsetDifference == -1 || this.traceMode.isParagraph(line)) {
 				continue;
 			}
 			actualMethod = getMethodForLineNumber(tracedLineNumber - offsetDifference, file);
@@ -47,15 +59,14 @@ class TestCoverageMerger {
 		return null;
 	}
 
-	private int getTraceNumberFrom(String line) {
-		if (line.length() < 70) {
-			return -1;
+	private int getTraceNumberFrom(String line, String followingLine) {
+		if (this.traceMode == null) {
+			this.traceMode = CobolTraceMode.getTraceModeFor(line);
 		}
-		return Integer.parseInt(line.substring(69).trim());
+		return this.traceMode.getLineNumberFor(line, followingLine);
 	}
 
-	private CobolCoverageMethod getMethodForName(String line, CobolCoverageFile file) {
-		String methodName = line.substring(40, 63).trim();
+	private CobolCoverageMethod getMethodForName(String methodName, CobolCoverageFile file) {
 		for (CobolCoverageMethod method : file.methods()) {
 			if (method.name().equals(methodName)) {
 				return method;

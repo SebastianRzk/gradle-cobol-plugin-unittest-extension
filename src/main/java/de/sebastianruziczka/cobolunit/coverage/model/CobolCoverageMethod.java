@@ -96,4 +96,14 @@ public class CobolCoverageMethod {
 	public int endLine() {
 		return this.endLine;
 	}
+
+	public int firstStatement() {
+		for (int i = 0; i < this.lines.size(); i++) {
+			CoverageStatus status = this.lines.get(i);
+			if (status != CoverageStatus.comment && status != CoverageStatus.empty) {
+				return i;
+			}
+		}
+		return this.lines.size();
+	}
 }
