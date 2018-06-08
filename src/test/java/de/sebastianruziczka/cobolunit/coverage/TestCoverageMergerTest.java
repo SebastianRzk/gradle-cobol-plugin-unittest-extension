@@ -20,7 +20,7 @@ public class TestCoverageMergerTest {
 				"Program-Id: Main             Statement: PERFORM                Line: 29\n" + //
 				"Program-Id: Main             Paragraph: 2000-COMPUTE-GREETING  Line: 90\n" + //
 				"Program-Id: Main             Statement: STRING                 Line: 91\n" + //
-				"Program-Id: Main             Statement: IF                     Line: 95\n";
+				"Program-Id: Main             Statement: IF                     Line: 95\n  \n";
 	}
 
 	private String complexLogOuput() {
@@ -29,7 +29,16 @@ public class TestCoverageMergerTest {
 				"Program-Id: Main             Statement: STRING                 Line: 1001\n" + //
 				"Program-Id: Main             Paragraph: 2000-COMPUTE-GREETING  Line: 1101\n" + //
 				"Program-Id: Main             Statement: STRING                 Line: 1103\n" + //
-				"Program-Id: Main             Statement: IF                     Line: 1104\n";
+				"Program-Id: Main             Statement: IF                     Line: 1104\n  \n";
+	}
+
+	private String openCobol11Ouput() {
+		return "PROGRAM-ID: Main: 1000-COMPUTE-GREETING\n"//
+				+ "PROGRAM-ID: Main 	Line: 1001 	Statement: STRING\n" //
+				+ "PROGRAM-ID: Main: 2000-COMPUTE-GREETING\n"//
+				+ "PROGRAM-ID: Main 	Line: 1101 	Statement: STRING\n"
+				+ "PROGRAM-ID: Main 	Line: 1103 	Statement: DISPLAY\n"
+				+ "PROGRAM-ID: Main 	Line: 1104 	Statement: DISPLAY\n  \n";
 	}
 
 	@Test
@@ -70,7 +79,7 @@ public class TestCoverageMergerTest {
 	}
 
 	@Test
-	public void testParse_shouldJu() {
+	public void testParse_shouldParseOpenCobol11Output() {
 		CobolCoverageFile file = new CobolCoverageFile("My Cool File");
 		CobolCoverageMethod method1000 = new CobolCoverageMethod("1000-COMPUTE-GREETING", 100);
 		method1000.setEnd(104);
@@ -82,13 +91,13 @@ public class TestCoverageMergerTest {
 
 		TestCoverageMerger component_under_test = new TestCoverageMerger();
 
-		component_under_test.merge(file, Arrays.asList(this.complexLogOuput().split("\n")));
+		component_under_test.merge(file, Arrays.asList(this.openCobol11Ouput().split("\n")));
 
 		assertLines(method1000, 100, 101, 102, 103, 104);
 		assertStatus(method1000, passed, not_passed, not_passed, not_passed, not_passed);
 
 		assertLines(method2000, 200, 201, 202, 203, 204);
-		assertStatus(method2000, not_passed, passed, passed, not_passed, not_passed);
+		assertStatus(method2000, passed, passed, not_passed, passed, not_passed);
 	}
 
 	private void assertLines(CobolCoverageMethod method, int... lines) {
