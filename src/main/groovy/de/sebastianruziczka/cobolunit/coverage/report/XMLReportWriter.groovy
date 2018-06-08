@@ -39,7 +39,7 @@ class XMLReportWriter {
 
 		Map<String, List<CobolCoverageFile>> cobolPackages = this.resolvePackages(coveredFiles)
 		xmlMarkup.
-				'coverage'('branch-rage':'0',
+				'coverage'('branch-rate':'0',
 				'branch-covered':'0',
 				'branch-valid':'0',
 				'complexity':'0',
