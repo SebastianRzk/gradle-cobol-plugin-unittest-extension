@@ -63,12 +63,11 @@ class XMLReportWriter {
 											'methods' {}
 											'lines' {
 												for (CobolCoverageMethod method : file.methods()) {
-													int methodOffset = method.startLine
 													for (CobolCoverageLine coveredLine : method.methodStatus()) {
 														if (coveredLine.status() == CoverageStatus.passed) {
-															'line' ('hits': '1', 'number' : coveredLine.lineNumber() + methodOffset){}
+															'line' ('hits': '1', 'number' : coveredLine.lineNumber()){}
 														} else {
-															'line' ('hits': '0', 'number' : coveredLine.lineNumber() + methodOffset){}
+															'line' ('hits': '0', 'number' : coveredLine.lineNumber()){}
 														}
 													}
 												}
