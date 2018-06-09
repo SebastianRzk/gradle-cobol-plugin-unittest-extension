@@ -24,6 +24,17 @@ Further Reading:
 * [GNUCobol-compiler](https://open-cobol.sourceforge.io/) The cobol compiler
 * [cobol-unit-test](https://github.com/neopragma/cobol-unit-test) The documentation of the unit-test feature
 
+## Supported versions
+
+| Compiler | Code format | support cobol unit test | support cobol testcoverage |
+| -------- | ----------- | ----------------------- | -------------------------- |
+| GnuCobol / Open Cobol 1.1 | fixed | full support | full support |
+| GnuCobol 2 | fixed | full support | full support |
+| GnuCobol 3rc | not tested | not tested | not tested |
+
+
+
+
 ## Installation
 
 Add the plugin to the [gradle-cobol-plugin](https://github.com/RosesTheN00b/gradle-cobol-plugin) classpath:
