@@ -36,6 +36,7 @@ class XMLReportWriter {
 
 		def xmlWriter = new StringWriter()
 		def xmlMarkup = new MarkupBuilder(xmlWriter)
+		xmlMarkup.setDoubleQuotes(true)
 
 		Map<String, List<CobolCoverageFile>> cobolPackages = this.resolvePackages(coveredFiles)
 		xmlMarkup.
