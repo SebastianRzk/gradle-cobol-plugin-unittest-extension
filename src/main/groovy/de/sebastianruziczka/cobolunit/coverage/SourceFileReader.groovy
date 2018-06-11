@@ -32,9 +32,13 @@ class SourceFileReader {
 		for (String line : srcFileContent) {
 			lineIndex ++
 			if (!procedureDivision) {
-				if (line.startsWith('       PROCEDURE DIVISION.')) {
+				if (line.startsWith('       PROCEDURE DIVISION')) {
 					procedureDivision = true
 				}
+				continue
+			}
+
+			if (line.isAllWhitespace()) {
 				continue
 			}
 

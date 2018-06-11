@@ -16,9 +16,31 @@ class ComputeTestCoverageTask extends DefaultTask{
 	public void computeTestCoverage() {
 		TestCoverageResolver testCoverageResolver = new TestCoverageResolver(this.conf)
 		def files = []
-		for (String file : this.testOuput.testCoverageFiles()) {
-			files << testCoverageResolver.resolve(file, this.testOuput.getCoverageOutput(file))
+		Set<String> computedFiles = new HashSet<>()
+
+		if (this.testOuput == null) {
+			logger.warn('No testcoverage found!')
+		}else {
+			for (String file : this.testOuput.testCoverageFiles()) {
+				files << testCoverageResolver.resolve(file, this.testOuput.getCoverageOutput(file))
+			}
 		}
+
+		String sourceFileLocation = this.conf.projectFileResolver(this.conf.srcMainPath).absolutePath
+		def allSourceFiles = project.fileTree(sourceFileLocation).include(this.conf.filetypePattern())
+		allSourceFiles.each { File file ->
+			println file
+			String relativePath = file.absolutePath.replaceAll(sourceFileLocation, "")
+			println sourceFileLocation
+			if (!computedFiles.contains(relativePath)){
+				logger.info('Read not covered file: ' + relativePath)
+				files << new SourceFileReader(this.conf).read(relativePath)
+			}
+		}
+
+
+
+
 		String xml = new XMLReportWriter(this.conf).writeToXML(files)
 		File xmlOutput = new File(this.conf.absoluteUnitTestFrameworkPath(CobolUnit.class.getSimpleName()) + '/coverage.xml')
 		xmlOutput << xml
