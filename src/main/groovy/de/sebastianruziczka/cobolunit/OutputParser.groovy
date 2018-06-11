@@ -1,18 +1,21 @@
 package de.sebastianruziczka.cobolunit
 
+import static de.sebastianruziczka.api.CobolCodeType.unit_test
+
+import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.buildcycle.test.TestMethod
 import de.sebastianruziczka.buildcycle.test.TestMethodResult
 
 public class OutputParser {
 
-	public TestFile parse(String testFileName, List<String> lines){
+	public TestFile parse(CobolSourceFile file, List<String> lines){
 		if (!lines.get(1).equals('TEST SUITE:')){
 			throw new IllegalArgumentException('Could not parse cobol unit test output')
 		}
 
 		TestFile result = new TestFile()
-		result.addName(testFileName + '(' + lines.get(2).trim() + ')')
+		result.addName(file.getRelativePath(unit_test) + '(' + lines.get(2).trim() + ')')
 
 		def console = []
 		for (int lineNumber = 4; lineNumber < lines.size(); lineNumber ++) {

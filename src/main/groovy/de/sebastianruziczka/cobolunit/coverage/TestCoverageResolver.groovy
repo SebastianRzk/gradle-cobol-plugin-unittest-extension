@@ -1,6 +1,7 @@
 package de.sebastianruziczka.cobolunit.coverage
 
 import de.sebastianruziczka.CobolExtension
+import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageFile
 
 class TestCoverageResolver {
@@ -12,7 +13,7 @@ class TestCoverageResolver {
 	}
 
 
-	public CobolCoverageFile resolve(String file, List<String> logOuput) {
+	public CobolCoverageFile resolve(CobolSourceFile file, List<String> logOuput) {
 		CobolCoverageFile coverageFile = new SourceFileReader(this.configuration).read(file)
 
 		TestCoverageMerger merger = new TestCoverageMerger()

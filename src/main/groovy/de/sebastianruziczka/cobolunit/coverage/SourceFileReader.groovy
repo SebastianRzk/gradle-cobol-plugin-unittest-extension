@@ -1,6 +1,9 @@
 package de.sebastianruziczka.cobolunit.coverage
 
+import static de.sebastianruziczka.api.CobolCodeType.source
+
 import de.sebastianruziczka.CobolExtension
+import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageFile
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageMethod
 
@@ -13,16 +16,15 @@ class SourceFileReader {
 	}
 
 	protected String[] fileContent(String fileName) {
-		File sourceFile = new File(new FixedFileConverter(this.configuration).fromFixedToOriginal(fileName))
+		File sourceFile = new File(fileName)
 		return sourceFile.text.split(System.getProperty('line.separator'))
 	}
 
-	public CobolCoverageFile read(String filename) {
-		String sourceFileName = filename.replace(this.configuration.unittestPostfix, '')
+	public CobolCoverageFile read(CobolSourceFile file) {
 
-		String[] srcFileContent = this.fileContent(sourceFileName)
+		String[] srcFileContent = this.fileContent(file.getAbsolutePath(source))
 
-		CobolCoverageFile cobolFile = new CobolCoverageFile(new FixedFileConverter(this.configuration).fromFixedToRelative(sourceFileName))
+		CobolCoverageFile cobolFile = new CobolCoverageFile(file.getRelativePath(source))
 		CobolCoverageMethod actualMethod = null
 
 		boolean procedureDivision = false

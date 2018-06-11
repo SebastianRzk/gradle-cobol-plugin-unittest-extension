@@ -4,6 +4,8 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 import de.sebastianruziczka.CobolExtension
+import de.sebastianruziczka.api.CobolCodeType
+import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.cobolunit.CobolUnit
 import de.sebastianruziczka.cobolunit.coverage.report.XMLReportWriter
 
@@ -21,10 +23,9 @@ class ComputeTestCoverageTask extends DefaultTask{
 		if (this.testOuput == null) {
 			logger.warn('No testcoverage found!')
 		}else {
-			for (String file : this.testOuput.testCoverageFiles()) {
+			for (CobolSourceFile file : this.testOuput.testCoverageFiles()) {
 				files << testCoverageResolver.resolve(file, this.testOuput.getCoverageOutput(file))
-				String testFileName =  new FixedFileConverter(this.conf).fromFixedToRelative(file)
-				computedFiles << testFileName.replace(this.conf.unittestPostfix + this.conf.srcFileType, this.conf.srcFileType)
+				computedFiles << file.getAbsolutePath(CobolCodeType.source)
 			}
 		}
 
@@ -32,10 +33,9 @@ class ComputeTestCoverageTask extends DefaultTask{
 		def allSourceFiles = project.fileTree(sourceFileLocation).include(this.conf.filetypePattern())
 		allSourceFiles.each { File file ->
 			String relativePath = file.absolutePath.replaceAll(sourceFileLocation, "").substring(1)
-
-			if (!computedFiles.contains(relativePath)){
+			if (!computedFiles.contains(file.absolutePath)){
 				logger.info('Read not covered file: ' + relativePath)
-				files << new SourceFileReader(this.conf).read(relativePath)
+				files << new SourceFileReader(this.conf).read(new CobolSourceFile(this.conf, relativePath))
 			}
 		}
 
