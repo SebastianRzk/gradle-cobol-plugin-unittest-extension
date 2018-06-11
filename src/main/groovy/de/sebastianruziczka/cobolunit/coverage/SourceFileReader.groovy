@@ -40,7 +40,7 @@ class SourceFileReader {
 				continue
 			}
 
-			if (line.isAllWhitespace()) {
+			if (line.isAllWhitespace() && actualMethod == null) {
 				continue
 			}
 
