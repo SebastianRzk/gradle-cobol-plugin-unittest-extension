@@ -177,7 +177,6 @@ class CobolUnit implements CobolTestFramework{
 				executableDir,
 				'Execute Unittest '+ file.getMeta(BUILD_TEST_EXECFILE_PATH),
 				file.getMeta(BUILD_TEST_EXEC_LOG_PATH))
-		println '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++' + file.getMeta(BUILD_TEST_EXEC_LOG_PATH)
 		if (this.configuration.unittestCodeCoverage) {
 			processWrapper.setEnvironmentVariable('COB_SET_TRACE', 'Y')
 		}
