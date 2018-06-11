@@ -55,7 +55,7 @@ public enum CobolTraceMode {
 	};
 
 	public static CobolTraceMode getTraceModeFor(String line) {
-		if (line.contains("Line: ") && line.substring(63).startsWith("Line:")) {
+		if (line.contains("Program-Id:")) {
 			return CobolTraceMode.gnucobol2;
 		}
 		return CobolTraceMode.gnucobol1;

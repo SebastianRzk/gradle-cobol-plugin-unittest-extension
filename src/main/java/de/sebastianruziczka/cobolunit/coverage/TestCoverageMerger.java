@@ -19,6 +19,9 @@ class TestCoverageMerger {
 		for (int i = 0; i < coverageOuptut.size() - 1; i++) {
 			String line = coverageOuptut.get(i);
 
+			LOGGER.debug("-------------------------_");
+			LOGGER.debug(line + ">>>" + coverageOuptut.get(i + 1));
+
 			int tracedLineNumber = getTraceNumberFrom(line, coverageOuptut.get(i + 1));
 
 			if (offsetDifference == -1 && this.traceMode.isParagraph(line)) {
@@ -32,8 +35,6 @@ class TestCoverageMerger {
 				continue;
 			}
 
-			LOGGER.debug("-------------------------_");
-			LOGGER.debug(line + ">>>" + coverageOuptut.get(i + 1));
 			LOGGER.debug(tracedLineNumber + "");
 			LOGGER.debug("Offset " + offsetDifference);
 			LOGGER.debug("traced: " + (tracedLineNumber - offsetDifference));
