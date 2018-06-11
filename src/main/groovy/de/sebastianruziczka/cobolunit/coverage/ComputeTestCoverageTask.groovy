@@ -23,15 +23,16 @@ class ComputeTestCoverageTask extends DefaultTask{
 		}else {
 			for (String file : this.testOuput.testCoverageFiles()) {
 				files << testCoverageResolver.resolve(file, this.testOuput.getCoverageOutput(file))
+				String testFileName =  new FixedFileConverter(this.conf).fromFixedToRelative(file)
+				computedFiles << testFileName.replace(this.conf.unittestPostfix + this.conf.srcFileType, this.conf.srcFileType)
 			}
 		}
 
 		String sourceFileLocation = this.conf.projectFileResolver(this.conf.srcMainPath).absolutePath
 		def allSourceFiles = project.fileTree(sourceFileLocation).include(this.conf.filetypePattern())
 		allSourceFiles.each { File file ->
-			println file
-			String relativePath = file.absolutePath.replaceAll(sourceFileLocation, "")
-			println sourceFileLocation
+			String relativePath = file.absolutePath.replaceAll(sourceFileLocation, "").substring(1)
+
 			if (!computedFiles.contains(relativePath)){
 				logger.info('Read not covered file: ' + relativePath)
 				files << new SourceFileReader(this.conf).read(relativePath)
