@@ -157,7 +157,7 @@ class CobolUnit implements CobolTestFramework{
 
 	private TestFile parseProcessOutput(String processOutput, CobolSourceFile file) {
 		List<String> lines = Arrays.asList(processOutput.split(System.getProperty('line.separator')))
-		OutputParser parser = new OutputParser()
+		OutputParser parser = new OutputParser(this.configuration)
 		if (this.configuration.unittestCodeCoverage) {
 			if (this.testCoverageProvider == null) {
 				this.testCoverageProvider = new OutputParserTestCoverageDecorator(parser)

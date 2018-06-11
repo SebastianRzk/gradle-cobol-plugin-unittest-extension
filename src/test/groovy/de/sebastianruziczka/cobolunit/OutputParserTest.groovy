@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat
 
 import org.junit.Test
 
+import de.sebastianruziczka.CobolExtension
+import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.buildcycle.test.TestMethod
 import de.sebastianruziczka.buildcycle.test.TestMethodResult
@@ -31,9 +33,9 @@ class OutputParserTest {
 
 	@Test
 	void test_parseSuccessFull() {
-		OutputParser component_under_test = new OutputParser()
+		OutputParser component_under_test = new OutputParser(new CobolExtension())
 
-		TestFile result = component_under_test.parse("TESTFAIL", this.successFull())
+		TestFile result = component_under_test.parse(this.fileStub(), this.successFull())
 
 		assertThat(result.name()).isEqualTo('TESTFAIL(GREETING AND FAREWELL)')
 		assertThat(result.testMethods.size()).isEqualTo(1)
@@ -42,5 +44,14 @@ class OutputParserTest {
 		assertThat(testMethod.name).isEqualTo('1. IT RETURNS HELLO, WORLD! AS GREETING')
 		assertThat(testMethod.result).isEqualTo(TestMethodResult.SUCCESSFUL)
 		assertThat(testMethod.console).isEqualTo("Hello Jens\nHELLO Hans")
+	}
+
+	CobolSourceFile fileStub() {
+		return new CobolSourceFileStub()
+	}
+}
+class CobolSourceFileStub extends CobolSourceFile{
+	public CobolSourceFileStub(){
+		super(new CobolExtension(), 'TESTFAIL')
 	}
 }

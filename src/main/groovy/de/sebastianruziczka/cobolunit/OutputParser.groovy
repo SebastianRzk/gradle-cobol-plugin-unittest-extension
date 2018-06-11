@@ -1,7 +1,8 @@
 package de.sebastianruziczka.cobolunit
 
-import static de.sebastianruziczka.api.CobolCodeType.unit_test
+import static de.sebastianruziczka.api.CobolCodeType.source
 
+import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.buildcycle.test.TestMethod
@@ -9,13 +10,19 @@ import de.sebastianruziczka.buildcycle.test.TestMethodResult
 
 public class OutputParser {
 
+	private CobolExtension configuration
+
+	public OutputParser(CobolExtension configuration) {
+		this.configuration = configuration
+	}
+
 	public TestFile parse(CobolSourceFile file, List<String> lines){
 		if (!lines.get(1).equals('TEST SUITE:')){
 			throw new IllegalArgumentException('Could not parse cobol unit test output')
 		}
 
 		TestFile result = new TestFile()
-		result.addName(file.getRelativePath(unit_test) + '(' + lines.get(2).trim() + ')')
+		result.addName(file.getRelativePath(source).replace(this.configuration.srcFileType, '') + '(' + lines.get(2).trim() + ')')
 
 		def console = []
 		for (int lineNumber = 4; lineNumber < lines.size(); lineNumber ++) {
