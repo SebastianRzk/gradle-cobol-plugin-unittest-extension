@@ -8,6 +8,8 @@ import static org.junit.Assert.*
 import org.junit.Test
 
 import de.sebastianruziczka.CobolExtension
+import de.sebastianruziczka.api.CobolCodeType
+import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageFile
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageLine
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageMethod
@@ -44,7 +46,7 @@ class SourceFileReaderTest {
 	public void test_readFile_shouldReadSimpleMethod(){
 		SourceFileReader component_under_test = new SourceFileReaderForTest(this.simpleFile())
 
-		CobolCoverageFile result = component_under_test.read("MAINUT")
+		CobolCoverageFile result = component_under_test.read(this.fileStub())
 		CobolCoverageMethod resultMethod = result.methods().get(0)
 
 		assertThat(result.methods().size()).isEqualTo(1)
@@ -84,7 +86,7 @@ class SourceFileReaderTest {
 	public void test_readFile_shouldIgnoreComment(){
 		SourceFileReader component_under_test = new SourceFileReaderForTest(this.fileWithComment())
 
-		CobolCoverageFile result = component_under_test.read("MAINUT")
+		CobolCoverageFile result = component_under_test.read(this.fileStub())
 		CobolCoverageMethod resultMethod = result.methods().get(0)
 
 		assertThat(result.methods().size()).isEqualTo(1)
@@ -123,7 +125,7 @@ class SourceFileReaderTest {
 	public void test_readFile_shouldParseFollowLine_withOnlyNotPassed(){
 		SourceFileReader component_under_test = new SourceFileReaderForTest(this.fileWithFollowLine())
 
-		CobolCoverageFile result = component_under_test.read("MAINUT")
+		CobolCoverageFile result = component_under_test.read(this.fileStub())
 		CobolCoverageMethod resultMethod = result.methods().get(0)
 
 		assertThat(result.methods().size()).isEqualTo(1)
@@ -136,7 +138,7 @@ class SourceFileReaderTest {
 	public void test_readFile_shouldParseFollowLine_withOneLinePassed_shouldFollow(){
 		SourceFileReader component_under_test = new SourceFileReaderForTest(this.fileWithFollowLine())
 
-		CobolCoverageFile result = component_under_test.read("MAINUT")
+		CobolCoverageFile result = component_under_test.read(this.fileStub())
 		CobolCoverageMethod resultMethod = result.methods().get(0)
 		resultMethod.setLineCoveredWithRelativeIndex(0)
 
@@ -161,6 +163,19 @@ class SourceFileReaderTest {
 		for (int i = 0 ; i< lines.length; i++) {
 			assertThat(methodStatus.get(i).status()).isEqualTo(lines[i])
 		}
+	}
+	CobolSourceFile fileStub() {
+		return new CobolSourceFileStub()
+	}
+}
+class CobolSourceFileStub extends CobolSourceFile{
+	public CobolSourceFileStub(){
+		super(new CobolExtension(), "MAINUT")
+	}
+
+	@Override
+	public String getAbsolutePath(CobolCodeType type) {
+		return ''
 	}
 }
 
