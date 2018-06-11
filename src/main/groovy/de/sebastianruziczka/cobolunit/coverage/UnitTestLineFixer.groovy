@@ -1,10 +1,18 @@
 package de.sebastianruziczka.cobolunit.coverage
 
+import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.ABSOLUTE_FIXED_UNITTEST_PATH
+import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.BUILD_TEST_SOURCEFILE_PATH
+
+import de.sebastianruziczka.api.CobolSourceFile
+
 class UnitTestLineFixer {
 
 
-	public void fix(String inputFilePath, String outputFilePath) {
+	public void fix(CobolSourceFile file) {
 		def lines = []
+		String inputFilePath = file.getMeta(BUILD_TEST_SOURCEFILE_PATH)
+		String outputFilePath = file.getMeta(ABSOLUTE_FIXED_UNITTEST_PATH)
+
 		new File(inputFilePath).eachLine { line ->
 			lines << line + System.getProperty('line.separator')
 		}
