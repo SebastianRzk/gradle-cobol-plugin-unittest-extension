@@ -142,7 +142,7 @@ class CobolUnit implements CobolTestFramework{
 			unitSourceFile.modifyTestModulePath(this.frameworkBin() + '/' + new FixedFileConverter(this.configuration).fromOriginalToFixed(file.getRelativePath(unit_test)))
 			file.setMeta(ABSOLUTE_FIXED_UNITTEST_PATH, this.configuration.projectFileResolver(unitSourceFile.actualTestfilePath()).absolutePath)
 
-			new UnitTestLineFixer().fix(file)
+			new UnitTestLineFixer().fix(unitSourceFile)
 		}
 
 		logger.info('Compile Test: ' + unitSourceFile.actualTestfilePath())
