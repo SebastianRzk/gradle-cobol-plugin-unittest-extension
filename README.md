@@ -1,6 +1,6 @@
 # Gradle-Cobol-Plugin-UnitTest-Extension
 [![Build 
-Status](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin-unittest-extension.svg?branch=master)](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin-unittest-extension)
+Status](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin-unittest-extension.svg?branch=master)](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin-unittest-extension)[![codecov](https://codecov.io/gh/RosesTheN00b/gradle-cobol-plugin-example/branch/master/graph/badge.svg)](https://codecov.io/gh/RosesTheN00b/gradle-cobol-plugin-example)
 
 
 This plugin extends the existing [gradle-cobol-plugin](https://github.com/RosesTheN00b/gradle-cobol-plugin) for unittests.
@@ -57,7 +57,7 @@ Or hardcode specific versions in your build.gradle (not preferred):
 
     buildscript {
     	 dependencies {
-    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: '0.0.19'
+    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: '0.0.20'
     	}
     }
 

@@ -1,9 +1,9 @@
-package de.sebastianruziczka.cobolunit.coverage
+package de.sebastianruziczka.cobolunit.coverage.sourcefilereader
 
 import static de.sebastianruziczka.api.CobolCodeType.source
 
 import de.sebastianruziczka.CobolExtension
-import de.sebastianruziczka.api.CobolSourceFile
+import de.sebastianruziczka.cobolunit.CobolUnitSourceFile
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageFile
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageMethod
 
@@ -20,7 +20,7 @@ class SourceFileReader {
 		return sourceFile.text.split(System.getProperty('line.separator'))
 	}
 
-	public CobolCoverageFile read(CobolSourceFile file) {
+	public CobolCoverageFile read(CobolUnitSourceFile file) {
 
 		String[] srcFileContent = this.fileContent(file.getAbsolutePath(source))
 
@@ -34,7 +34,7 @@ class SourceFileReader {
 		for (String line : srcFileContent) {
 			lineIndex ++
 			if (!procedureDivision) {
-				if (line.startsWith('       PROCEDURE DIVISION')) {
+				if (line.trim().startsWith('PROCEDURE DIVISION')) {
 					procedureDivision = true
 				}
 				continue
@@ -60,6 +60,11 @@ class SourceFileReader {
 
 			if (line.getAt(7) == '-') {
 				actualMethod.addFollowLine(lineIndex)
+				continue
+			}
+
+			if (IgnoredToken.matchAny(line)) {
+				actualMethod.addIgnoredLine(lineIndex)
 				continue
 			}
 

@@ -1,4 +1,4 @@
-package de.sebastianruziczka.cobolunit.coverage
+package de.sebastianruziczka.cobolunit.coverage.linefix
 import de.sebastianruziczka.CobolExtension
 
 class FixedFileConverter {

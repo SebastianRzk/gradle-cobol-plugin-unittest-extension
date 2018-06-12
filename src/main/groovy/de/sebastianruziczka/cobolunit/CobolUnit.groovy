@@ -6,8 +6,6 @@ import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.ABSOLUTE_FIXED_UN
 import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.BUILD_TEST_EXECFILE_PATH
 import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.BUILD_TEST_EXEC_LOG_PATH
 import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.BUILD_TEST_PRECOMPILER_LOG_PATH
-import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.BUILD_TEST_SOURCEFILE_PATH
-import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.RELATIVE_FIXED_UNITTEST_PATH
 import static de.sebastianruziczka.compiler.api.CompileStandard.ibm
 
 import org.gradle.api.Project
@@ -20,9 +18,9 @@ import de.sebastianruziczka.api.CobolTestFramework
 import de.sebastianruziczka.api.CobolUnitFrameworkProvider
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.cobolunit.coverage.ComputeTestCoverageTask
-import de.sebastianruziczka.cobolunit.coverage.FixedFileConverter
 import de.sebastianruziczka.cobolunit.coverage.OutputParserTestCoverageDecorator
-import de.sebastianruziczka.cobolunit.coverage.UnitTestLineFixer
+import de.sebastianruziczka.cobolunit.coverage.linefix.FixedFileConverter
+import de.sebastianruziczka.cobolunit.coverage.linefix.UnitTestLineFixer
 import de.sebastianruziczka.compiler.api.CompileJob
 import de.sebastianruziczka.metainf.MetaInfPropertyResolver
 import de.sebastianruziczka.process.ProcessWrapper
@@ -127,7 +125,8 @@ class CobolUnit implements CobolTestFramework{
 	@Override
 	public TestFile test(CobolSourceFile file) {
 		String testName = file.getRelativePath(unit_test)
-		file.setMeta(BUILD_TEST_SOURCEFILE_PATH, this.frameworkBin() + '/' + file.getRelativePath(unit_test))
+
+		CobolUnitSourceFile unitSourceFile = new CobolUnitSourceFile(file, this.frameworkBin(), this.frameworkBin() + '/' + file.getRelativePath(unit_test))
 
 		String testBuildPath = this.frameworkBin() + '/' + testName
 		File buildTestModule = new File(this.getParent(testBuildPath))
@@ -137,25 +136,24 @@ class CobolUnit implements CobolTestFramework{
 		}
 
 		logger.info('Preprocess Test: ' + testName)
-		this.preprocessTest(file, null)
+		this.preprocessTest(unitSourceFile, null)
 
 		if(this.configuration.unittestCodeCoverage) {
-			file.setMeta(RELATIVE_FIXED_UNITTEST_PATH, this.frameworkBin() + '/' + new FixedFileConverter(this.configuration).fromOriginalToFixed(file.getRelativePath(unit_test)))
-			file.setMeta(ABSOLUTE_FIXED_UNITTEST_PATH, this.configuration.projectFileResolver(file.getMeta(RELATIVE_FIXED_UNITTEST_PATH)).absolutePath)
+			unitSourceFile.modifyTestModulePath(this.frameworkBin() + '/' + new FixedFileConverter(this.configuration).fromOriginalToFixed(file.getRelativePath(unit_test)))
+			file.setMeta(ABSOLUTE_FIXED_UNITTEST_PATH, this.configuration.projectFileResolver(unitSourceFile.actualTestfilePath()).absolutePath)
 
-			new UnitTestLineFixer().fix(file)
-			file.setMeta(BUILD_TEST_SOURCEFILE_PATH, file.getMeta(RELATIVE_FIXED_UNITTEST_PATH))
+			new UnitTestLineFixer().fix(unitSourceFile)
 		}
 
-		logger.info('Compile Test: ' + testName)
-		this.compileTest(file)
-		logger.info('Run Test: ' + testName)
-		String result = this.executeTest(file)
+		logger.info('Compile Test: ' + unitSourceFile.actualTestfilePath())
+		this.compileTest(unitSourceFile)
+		logger.info('Run Test: ' + unitSourceFile.actualTestfilePath())
+		String result = this.executeTest(unitSourceFile)
 
-		return this.parseProcessOutput(result, file)
+		return this.parseProcessOutput(result, unitSourceFile)
 	}
 
-	private TestFile parseProcessOutput(String processOutput, CobolSourceFile file) {
+	private TestFile parseProcessOutput(String processOutput, CobolUnitSourceFile file) {
 		List<String> lines = Arrays.asList(processOutput.split(System.getProperty('line.separator')))
 		OutputParser parser = new OutputParser(this.configuration)
 		if (this.configuration.unittestCodeCoverage) {
@@ -167,7 +165,7 @@ class CobolUnit implements CobolTestFramework{
 		return parser.parse(file, lines)
 	}
 
-	private String executeTest(CobolSourceFile file) {
+	private String executeTest(CobolUnitSourceFile file) {
 		file.setMeta(BUILD_TEST_EXEC_LOG_PATH, file.getMeta(BUILD_TEST_EXECFILE_PATH) + '_TESTEXEC.LOG')
 		File executableDir = new File(file.getMeta(BUILD_TEST_EXECFILE_PATH)).getParentFile()
 		ProcessWrapper processWrapper = new ProcessWrapper(
@@ -190,18 +188,18 @@ class CobolUnit implements CobolTestFramework{
 		return this.configuration.projectFileResolver(absolutePath).getParent()
 	}
 
-	private int compileTest(CobolSourceFile file) {
+	private int compileTest(CobolUnitSourceFile file) {
 		CompileJob job = this.configuration.compiler
 				.buildExecutable(this.configuration)
 				.addIncludePath(file.getAbsoluteModulePath(source))//
 				.addIncludePath(file.getAbsoluteModulePath(unit_test))
 				.addIncludePath(this.frameworkBin())
-				.setTargetAndBuild(file.getMeta(BUILD_TEST_SOURCEFILE_PATH))
+				.setTargetAndBuild(file.actualTestfilePath())
 
 		if (this.configuration.unittestCodeCoverage) {
 			job = job.addCodeCoverageOption()
 		}
-		file.setMeta(BUILD_TEST_EXECFILE_PATH, file.getMeta(BUILD_TEST_SOURCEFILE_PATH).replace(this.configuration.srcFileType, ''))
+		file.setMeta(BUILD_TEST_EXECFILE_PATH, file.actualTestfilePath().replace(this.configuration.srcFileType, ''))
 		return job.execute('Compile UnitTest {' + file.getRelativePath(unit_test) + '}')
 	}
 
@@ -209,14 +207,14 @@ class CobolUnit implements CobolTestFramework{
 		return this.configuration.absoluteUnitTestFrameworkPath(this.getClass().getSimpleName())
 	}
 
-	private int preprocessTest(CobolSourceFile file, String testConfig) {
+	private int preprocessTest(CobolUnitSourceFile file, String testConfig) {
 		ProcessBuilder processBuilder = new ProcessBuilder(this.ZUTZCPC())
 
 		def env = processBuilder.environment()
 		env.put('SRCPRG', file.getAbsolutePath(source))
 		env.put('UTESTS', file.getAbsolutePath(unit_test))
 
-		env.put('TESTPRG', file.getMeta(BUILD_TEST_SOURCEFILE_PATH))
+		env.put('TESTPRG', file.actualTestfilePath())
 		env.put('TESTNAME', this.getFileName(file.getRelativePath(source)))
 
 		if (testConfig == null) {
@@ -228,7 +226,7 @@ class CobolUnit implements CobolTestFramework{
 		logger.info('Environment: ' + env.dump())
 		logger.info('Test precompile command args: ' + processBuilder.command().dump())
 
-		file.setMeta(BUILD_TEST_PRECOMPILER_LOG_PATH, file.getMeta(BUILD_TEST_SOURCEFILE_PATH) + '_PRECOMPILER.LOG')
+		file.setMeta(BUILD_TEST_PRECOMPILER_LOG_PATH, file.actualTestfilePath()+ '_PRECOMPILER.LOG')
 		ProcessWrapper processWrapper = new ProcessWrapper(processBuilder, 'Preprocess UnitTest '+ file.getRelativePath(unit_test), file.getMeta(BUILD_TEST_PRECOMPILER_LOG_PATH))
 		return processWrapper.exec()
 	}

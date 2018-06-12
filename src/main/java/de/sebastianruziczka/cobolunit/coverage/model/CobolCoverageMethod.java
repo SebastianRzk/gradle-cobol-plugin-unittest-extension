@@ -23,6 +23,10 @@ public class CobolCoverageMethod {
 		this.addLineStatus(line, CoverageStatus.comment);
 	}
 
+	public void addIgnoredLine(int line) {
+		this.addLineStatus(line, CoverageStatus.ignored);
+	}
+
 	public void addEmptyLine(int line) {
 		this.addLineStatus(line, CoverageStatus.empty);
 	}
