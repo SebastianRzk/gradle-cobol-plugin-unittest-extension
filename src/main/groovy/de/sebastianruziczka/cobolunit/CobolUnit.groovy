@@ -226,7 +226,7 @@ class CobolUnit implements CobolTestFramework{
 		logger.info('Environment: ' + env.dump())
 		logger.info('Test precompile command args: ' + processBuilder.command().dump())
 
-		file.setMeta(BUILD_TEST_PRECOMPILER_LOG_PATH, file.getMeta(BUILD_TEST_SOURCEFILE_PATH) + '_PRECOMPILER.LOG')
+		file.setMeta(BUILD_TEST_PRECOMPILER_LOG_PATH, file.actualTestfilePath()+ '_PRECOMPILER.LOG')
 		ProcessWrapper processWrapper = new ProcessWrapper(processBuilder, 'Preprocess UnitTest '+ file.getRelativePath(unit_test), file.getMeta(BUILD_TEST_PRECOMPILER_LOG_PATH))
 		return processWrapper.exec()
 	}
