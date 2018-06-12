@@ -27,7 +27,7 @@ Further Reading:
 
 ## Supported versions
 
-| Compiler | Code format | support cobol unit test | support cobol testcoverage |
+| Compiler | Code format | unit test | testcoverage |
 | -------- | ----------- | ----------------------- | -------------------------- |
 | GnuCobol / Open Cobol 1.1 | fixed | full support | full support |
 | GnuCobol 2 | fixed | full support | full support |
