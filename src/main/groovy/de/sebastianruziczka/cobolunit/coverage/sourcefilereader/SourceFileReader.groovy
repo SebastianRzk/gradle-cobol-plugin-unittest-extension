@@ -1,4 +1,4 @@
-package de.sebastianruziczka.cobolunit.coverage
+package de.sebastianruziczka.cobolunit.coverage.sourcefilereader
 
 import static de.sebastianruziczka.api.CobolCodeType.source
 
@@ -34,7 +34,7 @@ class SourceFileReader {
 		for (String line : srcFileContent) {
 			lineIndex ++
 			if (!procedureDivision) {
-				if (line.startsWith('       PROCEDURE DIVISION')) {
+				if (line.trim().startsWith('PROCEDURE DIVISION')) {
 					procedureDivision = true
 				}
 				continue
@@ -60,6 +60,11 @@ class SourceFileReader {
 
 			if (line.getAt(7) == '-') {
 				actualMethod.addFollowLine(lineIndex)
+				continue
+			}
+
+			if (IgnoredToken.matchAny(line)) {
+				actualMethod.addIgnoredLine(lineIndex)
 				continue
 			}
 

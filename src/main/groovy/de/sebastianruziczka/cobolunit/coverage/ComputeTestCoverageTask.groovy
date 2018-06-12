@@ -8,6 +8,7 @@ import de.sebastianruziczka.api.CobolCodeType
 import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.cobolunit.CobolUnit
 import de.sebastianruziczka.cobolunit.coverage.report.XMLReportWriter
+import de.sebastianruziczka.cobolunit.coverage.sourcefilereader.SourceFileReader
 
 class ComputeTestCoverageTask extends DefaultTask{
 

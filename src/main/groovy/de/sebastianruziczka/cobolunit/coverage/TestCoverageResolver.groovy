@@ -3,6 +3,7 @@ package de.sebastianruziczka.cobolunit.coverage
 import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageFile
+import de.sebastianruziczka.cobolunit.coverage.sourcefilereader.SourceFileReader
 
 class TestCoverageResolver {
 
