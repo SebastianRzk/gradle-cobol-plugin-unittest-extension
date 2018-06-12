@@ -46,8 +46,8 @@ class OutputParserTest {
 		assertThat(testMethod.console).isEqualTo("Hello Jens\nHELLO Hans")
 	}
 
-	CobolSourceFile fileStub() {
-		return new CobolSourceFileStub()
+	CobolUnitSourceFile fileStub() {
+		return new CobolUnitSourceFile(new CobolSourceFileStub(), "", "")
 	}
 }
 class CobolSourceFileStub extends CobolSourceFile{

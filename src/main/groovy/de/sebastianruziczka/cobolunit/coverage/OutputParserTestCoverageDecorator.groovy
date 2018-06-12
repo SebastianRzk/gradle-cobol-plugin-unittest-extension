@@ -2,6 +2,7 @@ package de.sebastianruziczka.cobolunit.coverage
 
 import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.buildcycle.test.TestFile
+import de.sebastianruziczka.cobolunit.CobolUnitSourceFile
 import de.sebastianruziczka.cobolunit.OutputParser
 
 class OutputParserTestCoverageDecorator {
@@ -13,7 +14,7 @@ class OutputParserTestCoverageDecorator {
 	}
 
 
-	public TestFile parse(CobolSourceFile file, List<String> lines) {
+	public TestFile parse(CobolUnitSourceFile file, List<String> lines) {
 		List<String> outputLines = new LinkedList<>()
 		List<String> testcoverageLines = new LinkedList<>()
 		for (String line : lines) {
