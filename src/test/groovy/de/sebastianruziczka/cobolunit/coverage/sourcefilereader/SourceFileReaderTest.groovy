@@ -10,11 +10,11 @@ import org.junit.Test
 import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolCodeType
 import de.sebastianruziczka.api.CobolSourceFile
+import de.sebastianruziczka.cobolunit.CobolUnitSourceFile
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageFile
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageLine
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageMethod
 import de.sebastianruziczka.cobolunit.coverage.model.CoverageStatus
-import de.sebastianruziczka.cobolunit.coverage.sourcefilereader.SourceFileReader
 
 class SourceFileReaderTest {
 
@@ -205,8 +205,9 @@ class SourceFileReaderTest {
 			assertThat(methodStatus.get(i).status()).isEqualTo(lines[i])
 		}
 	}
-	CobolSourceFile fileStub() {
-		return new CobolSourceFileStub()
+
+	CobolUnitSourceFile fileStub() {
+		return new CobolUnitSourceFile(new CobolSourceFileStub(), null, null)
 	}
 }
 class CobolSourceFileStub extends CobolSourceFile{
