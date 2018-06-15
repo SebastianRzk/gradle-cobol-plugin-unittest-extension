@@ -5,14 +5,13 @@ import static de.sebastianruziczka.api.CobolCodeType.unit_test
 import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.ABSOLUTE_FIXED_UNITTEST_PATH
 import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.BUILD_TEST_EXECFILE_PATH
 import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.BUILD_TEST_EXEC_LOG_PATH
-import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.BUILD_TEST_PRECOMPILER_LOG_PATH
-import static de.sebastianruziczka.compiler.api.CompileStandard.ibm
 
 import org.gradle.api.Project
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import de.sebastianruziczka.CobolExtension
+import de.sebastianruziczka.api.CobolCodeType
 import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.api.CobolTestFramework
 import de.sebastianruziczka.api.CobolUnitFrameworkProvider
@@ -32,10 +31,10 @@ class CobolUnit implements CobolTestFramework{
 	private CobolExtension configuration
 	private Project project
 	private def defaultConf = ["ZUTZCWS", "SAMPLET"]
-	private final static MAIN_FRAMEWORK_PROGRAMM =  'ZUTZCPC.CBL'
 	private final static DEFAULT_CONF_NAME = 'DEFAULT.CONF'
 	private String pluginName = null
 	private OutputParserTestCoverageDecorator testCoverageProvider;
+	private ZUTZCPC zutzcpc = null;
 
 	@Override
 	void configure(CobolExtension configuration, Project project) {
@@ -56,36 +55,13 @@ class CobolUnit implements CobolTestFramework{
 
 	@Override
 	int prepare() {
-		logger.info('Copy framework into build directory')
-		this.copyFrameworkIntoBuildDirectory()
+		logger.info('Setup ZUTZCPC test framework')
+		this.zutzcpc = new ZUTZCPC(this.frameworkBin(), this.configuration)
+		this.zutzcpc.setup()
 
 		logger.info('Create default test.conf')
 		this.createTestConf()
-
-		logger.info('Start compiling cobol-unit test framework')
-		return this.compileTestFramework(this.frameworkBin() + '/' + MAIN_FRAMEWORK_PROGRAMM)
-	}
-
-	private void copyFrameworkIntoBuildDirectory() {
-		def files = [
-			MAIN_FRAMEWORK_PROGRAMM,
-			'ZUTZCPD.CPY',
-			'ZUTZCWS.CPY'
-		]
-		String binFrameworkPath = this.frameworkBin()+ '/'
-		new File(binFrameworkPath).mkdirs()
-		logger.info('Moving sources of framwork into build')
-		files.each{
-			copy('res/' + it, binFrameworkPath + it )
-		}
-	}
-
-	private int compileTestFramework(String mainfile) {
-		return this.configuration.compiler
-				.buildExecutable(this.configuration)
-				.setCompileStandard(ibm)
-				.setTargetAndBuild(mainfile)
-				.execute('FrameworkCompile')
+		return 0
 	}
 
 	private void createTestConf() {
@@ -103,25 +79,6 @@ class CobolUnit implements CobolTestFramework{
 		return this.frameworkBin() + '/' + DEFAULT_CONF_NAME
 	}
 
-	private void copy(String source, String destination) {
-		logger.info('COPY: '+ source + '>>' + destination)
-		URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader()
-		URL manifestUrl = urlClassLoader.findResource(source)
-		InputStream is = manifestUrl.openStream()
-
-		File targetFile = new File(destination)
-		OutputStream outStream = new FileOutputStream(targetFile)
-
-		byte[] buffer = new byte[1024]
-		int length
-		while ((length = is.read(buffer)) > 0) {
-			outStream.write(buffer, 0, length)
-		}
-
-		outStream.close()
-		is.close()
-	}
-
 	@Override
 	public TestFile test(CobolSourceFile file) {
 		String testName = file.getRelativePath(unit_test)
@@ -136,7 +93,7 @@ class CobolUnit implements CobolTestFramework{
 		}
 
 		logger.info('Preprocess Test: ' + testName)
-		this.preprocessTest(unitSourceFile, null)
+		this.zutzcpc.preprocessTest(unitSourceFile, this.defaultConfPath(), CobolCodeType.unit_test)
 
 		if(this.configuration.unittestCodeCoverage) {
 			unitSourceFile.modifyTestModulePath(this.frameworkBin() + '/' + new FixedFileConverter(this.configuration).fromOriginalToFixed(file.getRelativePath(unit_test)))
@@ -205,43 +162,6 @@ class CobolUnit implements CobolTestFramework{
 
 	private String frameworkBin() {
 		return this.configuration.absoluteUnitTestFrameworkPath(this.getClass().getSimpleName())
-	}
-
-	private int preprocessTest(CobolUnitSourceFile file, String testConfig) {
-		ProcessBuilder processBuilder = new ProcessBuilder(this.ZUTZCPC())
-
-		def env = processBuilder.environment()
-		env.put('SRCPRG', file.getAbsolutePath(source))
-		env.put('UTESTS', file.getAbsolutePath(unit_test))
-
-		env.put('TESTPRG', file.actualTestfilePath())
-		env.put('TESTNAME', this.getFileName(file.getRelativePath(source)))
-
-		if (testConfig == null) {
-			env.put('UTSTCFG', this.defaultConfPath())
-		}else {
-			env.put('UTSTCFG', testConfig)
-		}
-
-		logger.info('Environment: ' + env.dump())
-		logger.info('Test precompile command args: ' + processBuilder.command().dump())
-
-		file.setMeta(BUILD_TEST_PRECOMPILER_LOG_PATH, file.actualTestfilePath()+ '_PRECOMPILER.LOG')
-		ProcessWrapper processWrapper = new ProcessWrapper(processBuilder, 'Preprocess UnitTest '+ file.getRelativePath(unit_test), file.getMeta(BUILD_TEST_PRECOMPILER_LOG_PATH))
-		return processWrapper.exec()
-	}
-
-	private String ZUTZCPC() {
-		return this.frameworkBin() + '/' + this.getFileName(MAIN_FRAMEWORK_PROGRAMM)
-	}
-
-	private String getFileName(String path) {
-		File file = new File(path)
-		String name = file.getName()
-		if (name.contains(".")) {
-			name = name.split("\\.")[0]
-		}
-		return name
 	}
 
 	private String getParent(String path) {
