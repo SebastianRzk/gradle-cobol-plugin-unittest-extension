@@ -1,4 +1,4 @@
-package de.sebastianruziczka.cobolunit
+package de.sebastianruziczka.cobolunit.steps
 
 import static de.sebastianruziczka.api.CobolCodeType.source
 import static de.sebastianruziczka.api.CobolCodeType.unit_test
@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory
 
 import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolCodeType
+import de.sebastianruziczka.cobolunit.CobolUnitMetaKeys
+import de.sebastianruziczka.cobolunit.CobolUnitSourceFile
 import de.sebastianruziczka.compiler.api.CompileStandard
 import de.sebastianruziczka.process.ProcessWrapper
 

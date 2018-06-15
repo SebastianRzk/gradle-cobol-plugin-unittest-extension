@@ -1,10 +1,7 @@
 package de.sebastianruziczka.cobolunit
 
-import static de.sebastianruziczka.api.CobolCodeType.source
 import static de.sebastianruziczka.api.CobolCodeType.unit_test
 import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.ABSOLUTE_FIXED_UNITTEST_PATH
-import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.BUILD_TEST_EXECFILE_PATH
-import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.BUILD_TEST_EXEC_LOG_PATH
 
 import org.gradle.api.Project
 import org.slf4j.Logger
@@ -20,9 +17,10 @@ import de.sebastianruziczka.cobolunit.coverage.ComputeTestCoverageTask
 import de.sebastianruziczka.cobolunit.coverage.OutputParserTestCoverageDecorator
 import de.sebastianruziczka.cobolunit.coverage.linefix.FixedFileConverter
 import de.sebastianruziczka.cobolunit.coverage.linefix.UnitTestLineFixer
-import de.sebastianruziczka.compiler.api.CompileJob
+import de.sebastianruziczka.cobolunit.steps.TestExectuableCompiler
+import de.sebastianruziczka.cobolunit.steps.TestExectuableExecutor
+import de.sebastianruziczka.cobolunit.steps.ZUTZCPC
 import de.sebastianruziczka.metainf.MetaInfPropertyResolver
-import de.sebastianruziczka.process.ProcessWrapper
 
 @CobolUnitFrameworkProvider
 class CobolUnit implements CobolTestFramework{
@@ -103,9 +101,9 @@ class CobolUnit implements CobolTestFramework{
 		}
 
 		logger.info('Compile Test: ' + unitSourceFile.actualTestfilePath())
-		this.compileTest(unitSourceFile)
+		new TestExectuableCompiler(this.configuration, this.frameworkBin()).compileTest(unitSourceFile)
 		logger.info('Run Test: ' + unitSourceFile.actualTestfilePath())
-		String result = this.executeTest(unitSourceFile)
+		String result = new TestExectuableExecutor(this.configuration).executeTest(unitSourceFile)
 
 		return this.parseProcessOutput(result, unitSourceFile)
 	}
@@ -120,44 +118,6 @@ class CobolUnit implements CobolTestFramework{
 			this.testCoverageProvider.parse(file, lines)
 		}
 		return parser.parse(file, lines)
-	}
-
-	private String executeTest(CobolUnitSourceFile file) {
-		file.setMeta(BUILD_TEST_EXEC_LOG_PATH, file.getMeta(BUILD_TEST_EXECFILE_PATH) + '_TESTEXEC.LOG')
-		File executableDir = new File(file.getMeta(BUILD_TEST_EXECFILE_PATH)).getParentFile()
-		ProcessWrapper processWrapper = new ProcessWrapper(
-				[
-					file.getMeta(BUILD_TEST_EXECFILE_PATH)
-				],
-				executableDir,
-				'Execute Unittest '+ file.getMeta(BUILD_TEST_EXECFILE_PATH),
-				file.getMeta(BUILD_TEST_EXEC_LOG_PATH))
-		if (this.configuration.unittestCodeCoverage) {
-			processWrapper.setEnvironmentVariable('COB_SET_TRACE', 'Y')
-		}
-
-		processWrapper.exec(true)
-		return processWrapper.processOutput()
-	}
-
-	private String frameworkBinModuleOf(String relativePath) {
-		String absolutePath = this.frameworkBin() + '/' + relativePath
-		return this.configuration.projectFileResolver(absolutePath).getParent()
-	}
-
-	private int compileTest(CobolUnitSourceFile file) {
-		CompileJob job = this.configuration.compiler
-				.buildExecutable(this.configuration)
-				.addIncludePath(file.getAbsoluteModulePath(source))//
-				.addIncludePath(file.getAbsoluteModulePath(unit_test))
-				.addIncludePath(this.frameworkBin())
-				.setTargetAndBuild(file.actualTestfilePath())
-
-		if (this.configuration.unittestCodeCoverage) {
-			job = job.addCodeCoverageOption()
-		}
-		file.setMeta(BUILD_TEST_EXECFILE_PATH, file.actualTestfilePath().replace(this.configuration.srcFileType, ''))
-		return job.execute('Compile UnitTest {' + file.getRelativePath(unit_test) + '}')
 	}
 
 	private String frameworkBin() {
@@ -187,5 +147,4 @@ class CobolUnit implements CobolTestFramework{
 	public void clean() {
 		this.testCoverageProvider = null
 	}
-
 }
