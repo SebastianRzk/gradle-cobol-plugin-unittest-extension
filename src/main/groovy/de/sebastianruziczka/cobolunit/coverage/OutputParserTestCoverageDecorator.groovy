@@ -2,7 +2,7 @@ package de.sebastianruziczka.cobolunit.coverage
 
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.cobolunit.CobolUnitSourceFile
-import de.sebastianruziczka.cobolunit.OutputParser
+import de.sebastianruziczka.cobolunit.steps.OutputParser
 
 class OutputParserTestCoverageDecorator {
 	private OutputParser parser;

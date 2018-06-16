@@ -1,4 +1,4 @@
-package de.sebastianruziczka.cobolunit
+package de.sebastianruziczka.cobolunit.steps
 
 import static de.sebastianruziczka.api.CobolCodeType.source
 
@@ -6,6 +6,7 @@ import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.buildcycle.test.TestMethod
 import de.sebastianruziczka.buildcycle.test.TestMethodResult
+import de.sebastianruziczka.cobolunit.CobolUnitSourceFile
 
 public class OutputParser {
 

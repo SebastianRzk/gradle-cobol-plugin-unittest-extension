@@ -11,7 +11,6 @@ import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolCodeType
 import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.api.CobolTestFramework
-import de.sebastianruziczka.api.CobolUnitFrameworkProvider
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.cobolunit.coverage.ComputeTestCoverageTask
 import de.sebastianruziczka.cobolunit.coverage.OutputParserTestCoverageDecorator
@@ -23,8 +22,8 @@ import de.sebastianruziczka.cobolunit.steps.TestExectuableExecutor
 import de.sebastianruziczka.cobolunit.steps.ZUTZCPC
 import de.sebastianruziczka.metainf.MetaInfPropertyResolver
 
-@CobolUnitFrameworkProvider
-class CobolUnit implements CobolTestFramework{
+//@CobolIntegrationTestFrameworkProvider
+class CobolUnitIntegration implements CobolTestFramework{
 	Logger logger = LoggerFactory.getLogger('cobolUnit')
 
 	private CobolExtension configuration
