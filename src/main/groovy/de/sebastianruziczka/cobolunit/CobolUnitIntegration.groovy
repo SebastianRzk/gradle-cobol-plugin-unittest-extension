@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 
 import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolCodeType
+import de.sebastianruziczka.api.CobolIntegrationTestFrameworkProvider
 import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.api.CobolTestFramework
 import de.sebastianruziczka.buildcycle.test.TestFile
@@ -17,12 +18,12 @@ import de.sebastianruziczka.cobolunit.coverage.OutputParserTestCoverageDecorator
 import de.sebastianruziczka.cobolunit.coverage.linefix.FixedFileConverter
 import de.sebastianruziczka.cobolunit.coverage.linefix.UnitTestLineFixer
 import de.sebastianruziczka.cobolunit.steps.OutputParser
-import de.sebastianruziczka.cobolunit.steps.TestExectuableCompiler
-import de.sebastianruziczka.cobolunit.steps.TestExectuableExecutor
+import de.sebastianruziczka.cobolunit.steps.TestDebugCompiler
+import de.sebastianruziczka.cobolunit.steps.TestDebugExecutor
 import de.sebastianruziczka.cobolunit.steps.ZUTZCPC
 import de.sebastianruziczka.metainf.MetaInfPropertyResolver
 
-//@CobolIntegrationTestFrameworkProvider
+@CobolIntegrationTestFrameworkProvider
 class CobolUnitIntegration implements CobolTestFramework{
 	Logger logger = LoggerFactory.getLogger('cobolUnit')
 
@@ -39,7 +40,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 		this.configuration = configuration
 		this.project = project
 
-		this.project.task('computeTestCoverage', type:ComputeTestCoverageTask){
+		this.project.task('computeIntegrationTestCoverage', type:ComputeTestCoverageTask){
 
 			group: 'COBOL Development'
 			description: 'Generates a testcoverage xml (cobertura-style)'
@@ -64,7 +65,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 
 	private void createTestConf() {
 		String path = this.defaultConfPath()
-		logger.info('Using Path: '+path)
+		logger.info('Using Path: ' + path)
 		def defaultConfFile = new File(path)
 		defaultConfFile.delete()
 
@@ -80,13 +81,14 @@ class CobolUnitIntegration implements CobolTestFramework{
 	@Override
 	public TestFile test(CobolSourceFile file) {
 		String testName = file.getRelativePath(unit_test)
+		String testFileName = this.testFileName(testName)
 
-		CobolUnitSourceFile unitSourceFile = new CobolUnitSourceFile(file, this.frameworkBin(), this.frameworkBin() + '/' + file.getRelativePath(unit_test))
+		CobolUnitSourceFile unitSourceFile = new CobolUnitSourceFile(file, this.frameworkBin(), this.testBin(testFileName) + '/' + file.getRelativePath(unit_test))
 
-		String testBuildPath = this.frameworkBin() + '/' + testName
+		String testBuildPath = this.testBin(testFileName) + '/' + testName
 		File buildTestModule = new File(this.getParent(testBuildPath))
 		if (!buildTestModule.exists()) {
-			this.logger.info('Creating test directory ' + testBuildPath)
+			this.logger.info('Creating integration test directory ' + testBuildPath)
 			buildTestModule.mkdirs()
 		}
 
@@ -94,16 +96,16 @@ class CobolUnitIntegration implements CobolTestFramework{
 		this.zutzcpc.preprocessTest(unitSourceFile, this.defaultConfPath(), CobolCodeType.unit_test)
 
 		if(this.configuration.unittestCodeCoverage) {
-			unitSourceFile.modifyTestModulePath(this.frameworkBin() + '/' + new FixedFileConverter(this.configuration).fromOriginalToFixed(file.getRelativePath(unit_test)))
+			unitSourceFile.modifyTestModulePath(this.testBin(testFileName) + '/' + new FixedFileConverter(this.configuration).fromOriginalToFixed(file.getRelativePath(unit_test)))
 			file.setMeta(ABSOLUTE_FIXED_UNITTEST_PATH, this.configuration.projectFileResolver(unitSourceFile.actualTestfilePath()).absolutePath)
 
 			new UnitTestLineFixer().fix(unitSourceFile)
 		}
 
 		logger.info('Compile Test: ' + unitSourceFile.actualTestfilePath())
-		new TestExectuableCompiler(this.configuration, this.frameworkBin()).compileTest(unitSourceFile)
+		new TestDebugCompiler(this.configuration, this.frameworkBin()).compileTest(unitSourceFile)
 		logger.info('Run Test: ' + unitSourceFile.actualTestfilePath())
-		String result = new TestExectuableExecutor(this.configuration).executeTest(unitSourceFile)
+		String result = new TestDebugExecutor(this.configuration).executeTest(unitSourceFile)
 
 		return this.parseProcessOutput(result, unitSourceFile)
 	}
@@ -121,7 +123,11 @@ class CobolUnitIntegration implements CobolTestFramework{
 	}
 
 	private String frameworkBin() {
-		return this.configuration.absoluteUnitTestFrameworkPath(this.getClass().getSimpleName())
+		return this.configuration.absoluteUnitTestFrameworkPath(CobolUnit.getSimpleName()) + '/integration'
+	}
+
+	private String testBin(String testname) {
+		return this.frameworkBin() + '/' + testname
 	}
 
 	private String getParent(String path) {
@@ -132,6 +138,10 @@ class CobolUnitIntegration implements CobolTestFramework{
 	private String versionNumber() {
 		MetaInfPropertyResolver resolver = new MetaInfPropertyResolver('gradle-cobol-plugin-unittest-extension')
 		return resolver.get('Implementation-Version').orElse('No version found!') + ' (' + resolver.get('Build-Date').orElse('No date found') + ')'
+	}
+
+	public String testFileName(String path) {
+		return new File(path).getName().replace(this.configuration.srcFileType, '')
 	}
 
 

@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory
 
 import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolCodeType
-import de.sebastianruziczka.cobolunit.CobolUnitMetaKeys
 import de.sebastianruziczka.cobolunit.CobolUnitSourceFile
 import de.sebastianruziczka.compiler.api.CompileStandard
 import de.sebastianruziczka.process.ProcessWrapper
@@ -29,6 +28,11 @@ class ZUTZCPC {
 	}
 
 	public void setup() {
+		if(new File(this.path + '/' + MAIN_FRAMEWORK_BIN).exists()) {
+			logger.info('ZUTZCPC Exectuable detected!')
+			logger.info('Using exiting one')
+			return
+		}
 		logger.info('Copy framework into build directory')
 		this.copyFrameworkIntoBuildDirectory()
 
@@ -45,7 +49,7 @@ class ZUTZCPC {
 		new File(this.path).mkdirs()
 		logger.info('Moving sources of framwork into build')
 		files.each{
-			copy('res/' + it, path + it )
+			copy('res/' + it, path + '/' + it )
 		}
 	}
 
