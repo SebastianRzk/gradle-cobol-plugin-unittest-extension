@@ -12,6 +12,8 @@ The new source code if fully backward compatible, but enables new features:
 * No redundant configuration (the plugin provides a default-configuration for all tests)
 * Fast and simple test execution by gradle with the task _:cobolUnit_
 * Simple testcoverage computation with task _cobolUnit_ _computeTestCoverage_ . This task generates a cobertura-testcoverage xml file.
+* Integration tests (full application + ressource build)
+* Integration tests with specific ressource files
 
 
 ## Gradle-cobol environment
