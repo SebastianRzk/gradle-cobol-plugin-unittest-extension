@@ -74,3 +74,44 @@ settings.gradle:
     		}
     	}
     }
+
+## Unit tests
+
+File conventions:
+
+* Source file (target): `<module>/<filename>.<cobol.srcFileType>` e.g. `CRTDB/MAIN.cbl`
+* Test file : `<module>/<filename><cobol.unittestPostfix>.<cobol.srcFileType>` e.g. `CRTDB/MAINUT.cbl`
+* Note: properties starting with `cobol.` are configured in your `cobol`-block in your `build.gradle`
+
+## Integration tests
+    
+* Source file (target): `<module>/<filename>.<cobol.srcFileType>` e.g. `CRTDB/MAIN.cbl`
+* Test file : `<module>/<filename><cobol.integrationtestPostfix>.<cobol.srcFileType>` e.g. `CRTDB/MAINIT.cbl`
+* Test ressources: `<cobol.resIntegrationTest>/<module>/<filename>/` e.g. `res/integrationtest/cobol/CRTDB/MAIN/`. All items in this folder will be copied in your build/exectution-directory of our integration test. Ressources from `res/main/cobol` will be replaced.
+* Note: properties starting with `cobol.` are configured in your `cobol`-block in your `build.gradle`
+
+### Example with default settings:
+
+	Source Directory:
+		- src/main/cobol/CRTDB/MAIN.cbl
+		- src/main/cobol/CRTDB/OTHER.cbl
+	
+	Test Directory:
+		- src/test/cobol/CRTDB/MAINIT.cbl --> Integration Test
+	
+	Ressources:
+		- res/main/cobol/CRTDB/database1.db --> ressource version
+		- res/main/cobol/CRTDB/database2.db --> ressource version
+	
+	Integration test ressources
+		- res/integrationtest/cobol/CRTDB/MAIN/CRTDB/database1.db --> integrationtest version
+		
+
+The cobol integration test will contain the following files:
+
+	Integration test directory:
+		- $dir/CRTDB/MainIT.so
+		- $dir/CRTDB/OTHER.so
+		- $dir/CRTDB/database1.db --> integrationtest version (replaced ressource version)
+		- $dir/CRTDB/database2.db --> ressource version
+
