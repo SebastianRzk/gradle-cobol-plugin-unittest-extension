@@ -1,4 +1,4 @@
-package de.sebastianruziczka.cobolunit;
+package de.sebastianruziczka.cobolunit.steps;
 
 import static org.assertj.core.api.Assertions.assertThat
 
@@ -9,6 +9,8 @@ import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.buildcycle.test.TestMethod
 import de.sebastianruziczka.buildcycle.test.TestMethodResult
+import de.sebastianruziczka.cobolunit.CobolUnitSourceFile
+import de.sebastianruziczka.cobolunit.steps.OutputParser
 
 class OutputParserTest {
 
