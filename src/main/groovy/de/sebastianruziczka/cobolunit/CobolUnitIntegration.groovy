@@ -87,10 +87,31 @@ class CobolUnitIntegration implements CobolTestFramework{
 
 		String testBuildPath = this.testBin(testFileName) + '/' + testName
 		File buildTestModule = new File(this.getParent(testBuildPath))
-		if (!buildTestModule.exists()) {
-			this.logger.info('Creating integration test directory ' + testBuildPath)
-			buildTestModule.mkdirs()
+
+
+
+		if (buildTestModule.exists()) {
+			logger.info('Delete already existing integration folder')
+			buildTestModule.delete()
+			buildTestModule = new File(this.getParent(testBuildPath))
 		}
+		this.logger.info('Creating integration test directory ' + testBuildPath)
+		buildTestModule.mkdirs()
+
+		logger.info('Moving build files into integrationtestfolder')
+
+		this.project.copy {
+			from this.configuration.binMainPath
+			into buildTestModule.absolutePath
+		}
+
+		println 'ssssssssssssssssssssssssssssssssssssssssssssssssssssss' + unitSourceFile.getAbsolutePath(CobolCodeType.integration_test_ressources)
+
+		this.project.copy{
+			from unitSourceFile.getAbsolutePath(CobolCodeType.integration_test_ressources)
+			into buildTestModule.absolutePath
+		}
+
 
 		logger.info('Preprocess Test: ' + testName)
 		this.zutzcpc.preprocessTest(unitSourceFile, this.defaultConfPath(), CobolCodeType.unit_test)
