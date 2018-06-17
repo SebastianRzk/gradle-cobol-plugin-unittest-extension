@@ -57,7 +57,7 @@ Or hardcode specific versions in your build.gradle (not preferred):
 
     buildscript {
     	 dependencies {
-    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: '0.0.20'
+    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: '0.0.21'
     	}
     }
 
@@ -107,7 +107,7 @@ File conventions:
 		- res/integrationtest/cobol/CRTDB/MAIN/CRTDB/database1.db --> integrationtest version
 		
 
-The cobol integration test will contain the following files:
+The cobol integration test for the file  `CRTDB/MAIN.cbl` will contain the following files:
 
 	Integration test directory:
 		- $dir/CRTDB/MainIT.so
