@@ -23,7 +23,7 @@ class TestDebugExecutor {
 					'cobcrun',
 					'-M',
 					new File(file.getMeta(BUILD_TEST_EXECFILE_PATH)).getName(),
-					'Main'
+					file.baseFileName()
 				],
 				executableDir,
 				'Execute Unittest '+ file.getMeta(BUILD_TEST_EXECFILE_PATH),

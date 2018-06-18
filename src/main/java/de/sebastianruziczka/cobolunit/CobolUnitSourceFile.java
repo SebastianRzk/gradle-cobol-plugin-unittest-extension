@@ -55,4 +55,8 @@ public class CobolUnitSourceFile {
 		return this.sourcefile.getMeta(key);
 	}
 
+	public String baseFileName() {
+		return this.sourcefile.baseFileName()
+	}
+
 }
