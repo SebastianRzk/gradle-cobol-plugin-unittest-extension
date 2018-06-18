@@ -105,8 +105,6 @@ class CobolUnitIntegration implements CobolTestFramework{
 			into buildTestModule.absolutePath
 		}
 
-		println 'ssssssssssssssssssssssssssssssssssssssssssssssssssssss' + unitSourceFile.getAbsolutePath(CobolCodeType.integration_test_ressources)
-
 		this.project.copy{
 			from unitSourceFile.getAbsolutePath(CobolCodeType.integration_test_ressources)
 			into buildTestModule.absolutePath
