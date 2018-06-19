@@ -144,7 +144,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 		return this.configuration.absoluteUnitTestFrameworkPath(CobolUnit.getSimpleName()) + '/integration'
 	}
 
-	private String testBin(CobolUnitSourceFile test) {
+	private String testBin(CobolSourceFile test) {
 		return this.frameworkBin() + '/' + test.baseFileName()
 	}
 
