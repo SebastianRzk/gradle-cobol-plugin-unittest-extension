@@ -1,7 +1,5 @@
 package de.sebastianruziczka.cobolunit.steps
 
-import static de.sebastianruziczka.api.CobolCodeType.source
-
 import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.buildcycle.test.TestMethod
@@ -21,9 +19,8 @@ public class OutputParser {
 			throw new IllegalArgumentException('Could not parse cobol unit test output')
 		}
 
-		String testFileName = this.fileName(file)
 		TestFile result = new TestFile()
-		result.addName(testFileName +  '(' + lines.get(2).trim() + ')')
+		result.addName(file.baseFileName() +  '(' + lines.get(2).trim() + ')')
 
 		def console = []
 		for (int lineNumber = 4; lineNumber < lines.size(); lineNumber ++) {
@@ -47,12 +44,5 @@ public class OutputParser {
 			}
 		}
 		return result
-	}
-
-	private String fileName(CobolUnitSourceFile file) {
-		return file.getRelativePath(source)//
-				.replace(this.configuration.srcFileType, '')//
-				.replaceAll(this.configuration.srcMainPath, '')//
-				.substring(1)
 	}
 }
