@@ -1,7 +1,6 @@
 package de.sebastianruziczka.cobolunit.steps
 
 import static de.sebastianruziczka.api.CobolCodeType.source
-import static de.sebastianruziczka.api.CobolCodeType.unit_test
 import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.BUILD_TEST_PRECOMPILER_LOG_PATH
 
 import org.slf4j.Logger
@@ -104,7 +103,7 @@ class ZUTZCPC {
 		logger.info('Test precompile command args: ' + processBuilder.command().dump())
 
 		file.setMeta(BUILD_TEST_PRECOMPILER_LOG_PATH, file.actualTestfilePath()+ '_PRECOMPILER.LOG')
-		ProcessWrapper processWrapper = new ProcessWrapper(processBuilder, 'Preprocess UnitTest '+ file.getRelativePath(unit_test), file.getMeta(BUILD_TEST_PRECOMPILER_LOG_PATH))
+		ProcessWrapper processWrapper = new ProcessWrapper(processBuilder, 'Preprocess Test '+ file.getRelativePath(testCodeType), file.getMeta(BUILD_TEST_PRECOMPILER_LOG_PATH))
 		return processWrapper.exec()
 	}
 }
