@@ -1,7 +1,6 @@
 package de.sebastianruziczka.cobolunit
 
 import static de.sebastianruziczka.api.CobolCodeType.integration_test
-import static de.sebastianruziczka.api.CobolCodeType.unit_test
 import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.ABSOLUTE_FIXED_UNITTEST_PATH
 
 import org.gradle.api.Project
@@ -81,9 +80,9 @@ class CobolUnitIntegration implements CobolTestFramework{
 
 	@Override
 	public TestFile test(CobolSourceFile file) {
-		String testName = file.getRelativePath(unit_test)
+		String testName = file.getRelativePath(integration_test)
 
-		CobolUnitSourceFile unitSourceFile = new CobolUnitSourceFile(file, this.frameworkBin(), this.testBin(file) + '/' + file.getRelativePath(unit_test))
+		CobolUnitSourceFile unitSourceFile = new CobolUnitSourceFile(file, this.frameworkBin(), this.testBin(file) + '/' + file.getRelativePath(integration_test))
 
 		String testBuildPath = this.testBin(file) + '/' + testName
 		File buildTestModule = new File(this.getParent(testBuildPath))
@@ -115,7 +114,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 		this.zutzcpc.preprocessTest(unitSourceFile, this.defaultConfPath(), integration_test)
 
 		if(this.configuration.unittestCodeCoverage) {
-			unitSourceFile.modifyTestModulePath(this.testBin(file) + '/' + new FixedFileConverter(this.configuration).fromOriginalToFixed(file.getRelativePath(unit_test)))
+			unitSourceFile.modifyTestModulePath(this.testBin(file) + '/' + new FixedFileConverter(this.configuration).fromOriginalToFixed(file.getRelativePath(integration_test)))
 			file.setMeta(ABSOLUTE_FIXED_UNITTEST_PATH, this.configuration.projectFileResolver(unitSourceFile.actualTestfilePath()).absolutePath)
 
 			new UnitTestLineFixer().fix(unitSourceFile)
