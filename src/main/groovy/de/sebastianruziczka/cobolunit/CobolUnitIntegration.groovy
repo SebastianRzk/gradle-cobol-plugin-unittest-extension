@@ -1,5 +1,6 @@
 package de.sebastianruziczka.cobolunit
 
+import static de.sebastianruziczka.api.CobolCodeType.integration_test
 import static de.sebastianruziczka.api.CobolCodeType.unit_test
 import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.ABSOLUTE_FIXED_UNITTEST_PATH
 
@@ -111,7 +112,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 
 
 		logger.info('Preprocess Test: ' + testName)
-		this.zutzcpc.preprocessTest(unitSourceFile, this.defaultConfPath(), CobolCodeType.unit_test)
+		this.zutzcpc.preprocessTest(unitSourceFile, this.defaultConfPath(), integration_test)
 
 		if(this.configuration.unittestCodeCoverage) {
 			unitSourceFile.modifyTestModulePath(this.testBin(file) + '/' + new FixedFileConverter(this.configuration).fromOriginalToFixed(file.getRelativePath(unit_test)))
