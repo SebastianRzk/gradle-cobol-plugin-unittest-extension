@@ -96,7 +96,7 @@ class ZUTZCPC {
 		env.put('UTESTS', file.getAbsolutePath(testCodeType))
 
 		env.put('TESTPRG', file.actualTestfilePath())
-		env.put('TESTNAME', this.getFileName(file.getRelativePath(source)))
+		env.put('TESTNAME', file.baseFileName())
 
 		env.put('UTSTCFG', testConfig)
 
@@ -106,14 +106,5 @@ class ZUTZCPC {
 		file.setMeta(BUILD_TEST_PRECOMPILER_LOG_PATH, file.actualTestfilePath()+ '_PRECOMPILER.LOG')
 		ProcessWrapper processWrapper = new ProcessWrapper(processBuilder, 'Preprocess UnitTest '+ file.getRelativePath(unit_test), file.getMeta(BUILD_TEST_PRECOMPILER_LOG_PATH))
 		return processWrapper.exec()
-	}
-
-	private String getFileName(String path) {
-		File file = new File(path)
-		String name = file.getName()
-		if (name.contains(".")) {
-			name = name.split("\\.")[0]
-		}
-		return name
 	}
 }

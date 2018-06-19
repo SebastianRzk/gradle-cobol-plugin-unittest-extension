@@ -81,11 +81,10 @@ class CobolUnitIntegration implements CobolTestFramework{
 	@Override
 	public TestFile test(CobolSourceFile file) {
 		String testName = file.getRelativePath(unit_test)
-		String testFileName = this.testFileName(testName)
 
-		CobolUnitSourceFile unitSourceFile = new CobolUnitSourceFile(file, this.frameworkBin(), this.testBin(testFileName) + '/' + file.getRelativePath(unit_test))
+		CobolUnitSourceFile unitSourceFile = new CobolUnitSourceFile(file, this.frameworkBin(), this.testBin(file) + '/' + file.getRelativePath(unit_test))
 
-		String testBuildPath = this.testBin(testFileName) + '/' + testName
+		String testBuildPath = this.testBin(file) + '/' + testName
 		File buildTestModule = new File(this.getParent(testBuildPath))
 
 
@@ -115,7 +114,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 		this.zutzcpc.preprocessTest(unitSourceFile, this.defaultConfPath(), CobolCodeType.unit_test)
 
 		if(this.configuration.unittestCodeCoverage) {
-			unitSourceFile.modifyTestModulePath(this.testBin(testFileName) + '/' + new FixedFileConverter(this.configuration).fromOriginalToFixed(file.getRelativePath(unit_test)))
+			unitSourceFile.modifyTestModulePath(this.testBin(file) + '/' + new FixedFileConverter(this.configuration).fromOriginalToFixed(file.getRelativePath(unit_test)))
 			file.setMeta(ABSOLUTE_FIXED_UNITTEST_PATH, this.configuration.projectFileResolver(unitSourceFile.actualTestfilePath()).absolutePath)
 
 			new UnitTestLineFixer().fix(unitSourceFile)
@@ -145,8 +144,8 @@ class CobolUnitIntegration implements CobolTestFramework{
 		return this.configuration.absoluteUnitTestFrameworkPath(CobolUnit.getSimpleName()) + '/integration'
 	}
 
-	private String testBin(String testname) {
-		return this.frameworkBin() + '/' + testname
+	private String testBin(CobolUnitSourceFile test) {
+		return this.frameworkBin() + '/' + test.baseFileName()
 	}
 
 	private String getParent(String path) {
@@ -158,11 +157,6 @@ class CobolUnitIntegration implements CobolTestFramework{
 		MetaInfPropertyResolver resolver = new MetaInfPropertyResolver('gradle-cobol-plugin-unittest-extension')
 		return resolver.get('Implementation-Version').orElse('No version found!') + ' (' + resolver.get('Build-Date').orElse('No date found') + ')'
 	}
-
-	public String testFileName(String path) {
-		return new File(path).getName().replace(this.configuration.srcFileType, '')
-	}
-
 
 	@Override
 	public String toString() {
