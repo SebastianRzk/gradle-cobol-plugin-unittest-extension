@@ -1,6 +1,5 @@
 package de.sebastianruziczka.cobolunit.steps
 
-import static de.sebastianruziczka.api.CobolCodeType.unit_test
 import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.BUILD_TEST_EXECFILE_PATH
 
 import de.sebastianruziczka.CobolExtension
@@ -30,6 +29,6 @@ class TestDebugCompiler {
 			job = job.addCodeCoverageOption()
 		}
 		file.setMeta(BUILD_TEST_EXECFILE_PATH, file.actualTestfilePath().replace(this.configuration.srcFileType, ''))
-		return job.execute('Compile Debug UnitTest {' + file.getRelativePath(unit_test) + '}')
+		return job.execute('Compile Debug Test {' + file.getRelativePath(CobolCodeType.integration_test) + '}')
 	}
 }
