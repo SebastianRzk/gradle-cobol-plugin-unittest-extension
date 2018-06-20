@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin-unittest-extension.svg?branch=master)](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin-unittest-extension)
 
 
-This plugin extends the existing [gradle-cobol-plugin](https://github.com/RosesTheN00b/gradle-cobol-plugin) for unittests.
+This plugin extends the existing [gradle-cobol-plugin](https://gradle-cobol.sebastianruziczka.de) for unittests.
 
 This gradle plugin is based on the existing github project [cobol-unit-test](https://github.com/neopragma/cobol-unit-test).
 
