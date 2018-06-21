@@ -76,6 +76,22 @@ public class TestCoverageMergerTest {
 	}
 
 	@Test
+	public void testParse_shouldHandlePathNames() {
+		CobolCoverageFile file = new CobolCoverageFile("src/main/cobol/Main");
+		List<CobolCoverageFile> files = Arrays.asList(file);
+		CobolCoverageMethod method = new CobolCoverageMethod("2000-COMPUTE-GREETING", 1);
+		method.setEnd(6);
+		file.addMethod(method);
+
+		TestCoverageMerger component_under_test = new TestCoverageMerger();
+
+		component_under_test.merge(files, Arrays.asList(this.simpleLogOuput().split("\n")));
+
+		assertLines(method, 1, 2, 3, 4, 5, 6);
+		assertStatus(method, passed, not_passed, not_passed, not_passed, passed, not_passed);
+	}
+
+	@Test
 	public void testParse_shouldSwitchParagraphs() {
 		CobolCoverageFile file = new CobolCoverageFile("Main");
 		List<CobolCoverageFile> files = Arrays.asList(file);
