@@ -101,12 +101,12 @@ class CobolUnitIntegration implements CobolTestFramework{
 
 		this.project.copy {
 			from this.configuration.binMainPath
-			into buildTestModule.absolutePath
+			into this.testBin(file)
 		}
 
 		this.project.copy{
 			from unitSourceFile.getAbsolutePath(CobolCodeType.integration_test_ressources)
-			into buildTestModule.absolutePath
+			into this.testBin(file)
 		}
 
 
