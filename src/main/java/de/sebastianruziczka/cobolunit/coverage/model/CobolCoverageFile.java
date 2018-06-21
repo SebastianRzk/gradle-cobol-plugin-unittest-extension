@@ -1,5 +1,6 @@
 package de.sebastianruziczka.cobolunit.coverage.model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,10 @@ public class CobolCoverageFile {
 
 	public String name() {
 		return this.name;
+	}
+
+	public String simpleName() {
+		return new File(this.name).getName();
 	}
 
 	@Override

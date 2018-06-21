@@ -30,7 +30,7 @@ class TestCoverageMerger {
 		String programmID = this.traceMode.parseProgrammID(line);
 		LOGGER.debug("Resolved Programm ID: " + programmID);
 		for (CobolCoverageFile file : files) {
-			if (file.name().equals(programmID)) {
+			if (file.simpleName().equals(programmID)) {
 				return Optional.of(file);
 			}
 		}
