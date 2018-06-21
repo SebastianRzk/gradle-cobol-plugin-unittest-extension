@@ -28,8 +28,6 @@ class ComputeTestCoverageTask extends DefaultTask{
 			files << new SourceFileReader(this.conf).read(new CobolUnitSourceFile(new CobolSourceFile(this.conf, relativePath), null, null))
 		}
 
-
-
 		if (this.testOuput == null) {
 			logger.warn('No testcoverage found!')
 		}else {
