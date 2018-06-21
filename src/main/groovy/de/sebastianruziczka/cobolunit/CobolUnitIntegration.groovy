@@ -87,7 +87,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 
 		String testBuildPath = this.testBin(file) + '/' + testName
 		File buildTestModule = new File(this.getParent(testBuildPath))
-		File integrationTestRoot = new File(this.testBin(file) + '/' + this.configuration.srcMainPath + '/' )
+		File integrationTestRoot = new File(this.testBin(file) + '/' + this.configuration.srcTestPath + '/' )
 
 
 
