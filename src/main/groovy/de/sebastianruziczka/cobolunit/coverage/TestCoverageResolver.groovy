@@ -1,9 +1,7 @@
 package de.sebastianruziczka.cobolunit.coverage
 
 import de.sebastianruziczka.CobolExtension
-import de.sebastianruziczka.cobolunit.CobolUnitSourceFile
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageFile
-import de.sebastianruziczka.cobolunit.coverage.sourcefilereader.SourceFileReader
 
 class TestCoverageResolver {
 
@@ -14,11 +12,9 @@ class TestCoverageResolver {
 	}
 
 
-	public CobolCoverageFile resolve(CobolUnitSourceFile file, List<String> logOuput) {
-		CobolCoverageFile coverageFile = new SourceFileReader(this.configuration).read(file)
-
+	public CobolCoverageFile resolve(List<CobolCoverageFile> files, List<String> logOuput) {
 		TestCoverageMerger merger = new TestCoverageMerger()
-		merger.merge(coverageFile, logOuput)
-		return coverageFile
+		merger.merge(files, logOuput)
+		return files
 	}
 }

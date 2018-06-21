@@ -52,14 +52,15 @@ public class TestCoverageMergerTest {
 
 	@Test
 	public void testParse_shouldDetectParagraph() {
-		CobolCoverageFile file = new CobolCoverageFile("My Cool File");
+		CobolCoverageFile file = new CobolCoverageFile("Main");
+		List<CobolCoverageFile> files = Arrays.asList(file);
 		CobolCoverageMethod method = new CobolCoverageMethod("2000-COMPUTE-GREETING", 1);
 		method.setEnd(6);
 		file.addMethod(method);
 
 		TestCoverageMerger component_under_test = new TestCoverageMerger();
 
-		component_under_test.merge(file, Arrays.asList(this.simpleLogOuput().split("\n")));
+		component_under_test.merge(files, Arrays.asList(this.simpleLogOuput().split("\n")));
 
 		assertLines(method, 1, 2, 3, 4, 5, 6);
 		assertStatus(method, passed, not_passed, not_passed, not_passed, passed, not_passed);
@@ -67,7 +68,8 @@ public class TestCoverageMergerTest {
 
 	@Test
 	public void testParse_shouldSwitchParagraphs() {
-		CobolCoverageFile file = new CobolCoverageFile("My Cool File");
+		CobolCoverageFile file = new CobolCoverageFile("Main");
+		List<CobolCoverageFile> files = Arrays.asList(file);
 		CobolCoverageMethod method1000 = new CobolCoverageMethod("1000-COMPUTE-GREETING", 100);
 		method1000.setEnd(104);
 		file.addMethod(method1000);
@@ -78,7 +80,7 @@ public class TestCoverageMergerTest {
 
 		TestCoverageMerger component_under_test = new TestCoverageMerger();
 
-		component_under_test.merge(file, Arrays.asList(this.complexLogOuput().split("\n")));
+		component_under_test.merge(files, Arrays.asList(this.complexLogOuput().split("\n")));
 
 		assertLines(method1000, 100, 101, 102, 103, 104);
 		assertStatus(method1000, passed, not_passed, not_passed, not_passed, not_passed);
@@ -89,7 +91,8 @@ public class TestCoverageMergerTest {
 
 	@Test
 	public void testParse_shouldParseOpenCobol11Output() {
-		CobolCoverageFile file = new CobolCoverageFile("My Cool File");
+		CobolCoverageFile file = new CobolCoverageFile("Main");
+		List<CobolCoverageFile> files = Arrays.asList(file);
 		CobolCoverageMethod method1000 = new CobolCoverageMethod("1000-COMPUTE-GREETING", 100);
 		method1000.setEnd(104);
 		file.addMethod(method1000);
@@ -100,7 +103,7 @@ public class TestCoverageMergerTest {
 
 		TestCoverageMerger component_under_test = new TestCoverageMerger();
 
-		component_under_test.merge(file, Arrays.asList(this.openCobol11Ouput().split("\n")));
+		component_under_test.merge(files, Arrays.asList(this.openCobol11Ouput().split("\n")));
 
 		assertLines(method1000, 100, 101, 102, 103, 104);
 		assertStatus(method1000, passed, not_passed, not_passed, not_passed, not_passed);
@@ -111,7 +114,8 @@ public class TestCoverageMergerTest {
 
 	@Test
 	public void testParse_shouldParseOpenCobol11Output_andFixCommentsBeforeFirstStatement() {
-		CobolCoverageFile file = new CobolCoverageFile("My Cool File");
+		CobolCoverageFile file = new CobolCoverageFile("Main");
+		List<CobolCoverageFile> files = Arrays.asList(file);
 		CobolCoverageMethod method1000 = new CobolCoverageMethod("1000-COMPUTE-GREETING", 100);
 		method1000.setEnd(104);
 		method1000.addComment(100);
@@ -124,7 +128,7 @@ public class TestCoverageMergerTest {
 
 		TestCoverageMerger component_under_test = new TestCoverageMerger();
 
-		component_under_test.merge(file, Arrays.asList(this.openCobol11OuputWithMethodOffset().split("\n")));
+		component_under_test.merge(files, Arrays.asList(this.openCobol11OuputWithMethodOffset().split("\n")));
 		assertLines(method1000, 102, 103, 104);
 		assertStatus(method1000, passed, not_passed, not_passed);
 
