@@ -48,6 +48,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 			doFirst{
 				testOuput = this.testCoverageProvider
 				conf = this.configuration
+				coveragePrefix = "integration-"
 			}
 		}
 	}
@@ -86,6 +87,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 
 		String testBuildPath = this.testBin(file) + '/' + testName
 		File buildTestModule = new File(this.getParent(testBuildPath))
+		File integrationTestRoot = new File(this.testBin(file) + '/' + this.configuration.resIntegrationTest + '/' )
 
 
 
@@ -101,12 +103,12 @@ class CobolUnitIntegration implements CobolTestFramework{
 
 		this.project.copy {
 			from this.configuration.binMainPath
-			into this.testBin(file)
+			into integrationTestRoot
 		}
 
 		this.project.copy{
 			from unitSourceFile.getAbsolutePath(CobolCodeType.integration_test_ressources)
-			into this.testBin(file)
+			into integrationTestRoot
 		}
 
 
