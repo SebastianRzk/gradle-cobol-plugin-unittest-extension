@@ -28,11 +28,15 @@ class TestCoverageMerger {
 			this.traceMode = CobolTraceMode.getTraceModeFor(line);
 		}
 		String programmID = this.traceMode.parseProgrammID(line);
+		LOGGER.debug("Resolved Programm ID: " + programmID);
 		for (CobolCoverageFile file : files) {
 			if (file.name().equals(programmID)) {
 				return Optional.of(file);
 			}
 		}
+		LOGGER.debug("No file with id found");
+		LOGGER.debug("FoundFiles: ");
+		LOGGER.debug(files.toString());
 		return Optional.empty();
 	}
 
