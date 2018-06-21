@@ -4,7 +4,7 @@ public enum CobolTraceMode {
 
 	gnucobol1 {
 		@Override
-		int getLineNumberFor(String line, String followingLine) {
+		public int getLineNumberFor(String line, String followingLine) {
 			if (this.isParagraph(line)) {
 				return this.getNumber(followingLine) - 1;
 			}
@@ -20,22 +20,26 @@ public enum CobolTraceMode {
 		}
 
 		@Override
-		boolean isParagraph(String line) {
+		public boolean isParagraph(String line) {
 			return line.contains("PROGRAM-ID:") && !line.contains("Line:");
 		}
 
 		@Override
-		String parseParagraphName(String line) {
+		public String parseParagraphName(String line) {
 			return line.split(":")[line.split(":").length - 1].trim();
 		}
 
-	},
-	gnucobol2
-
-	{
-
 		@Override
-		int getLineNumberFor(String line, String followingLine) {
+		public String parseProgrammID(String line) {
+			if (this.isParagraph(line)) {
+				return line.substring("PROGRAM-ID:".length()).split(":")[0].trim();
+			}
+			return line.substring("PROGRAM-ID:".length()).split("\t")[0].trim();
+		}
+	},
+	gnucobol2 {
+		@Override
+		public int getLineNumberFor(String line, String followingLine) {
 			if (line.length() < 70) {
 				return -1;
 			}
@@ -43,15 +47,19 @@ public enum CobolTraceMode {
 		}
 
 		@Override
-		boolean isParagraph(String line) {
+		public boolean isParagraph(String line) {
 			return "Paragraph:".equals(line.substring(29, 39));
 		}
 
 		@Override
-		String parseParagraphName(String line) {
+		public String parseParagraphName(String line) {
 			return line.substring(40, 63).trim();
 		}
 
+		@Override
+		public String parseProgrammID(String line) {
+			return line.substring("Program-Id: ".length()).split(" ")[0].trim();
+		}
 	};
 
 	public static CobolTraceMode getTraceModeFor(String line) {
@@ -61,9 +69,11 @@ public enum CobolTraceMode {
 		return CobolTraceMode.gnucobol1;
 	}
 
-	abstract int getLineNumberFor(String line, String followingLine);
+	public abstract int getLineNumberFor(String line, String followingLine);
 
-	abstract boolean isParagraph(String line);
+	public abstract boolean isParagraph(String line);
 
-	abstract String parseParagraphName(String line);
+	public abstract String parseParagraphName(String line);
+
+	public abstract String parseProgrammID(String line);
 }

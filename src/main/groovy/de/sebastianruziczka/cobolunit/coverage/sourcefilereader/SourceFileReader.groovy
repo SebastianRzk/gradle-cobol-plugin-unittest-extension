@@ -24,7 +24,7 @@ class SourceFileReader {
 
 		String[] srcFileContent = this.fileContent(file.getAbsolutePath(source))
 
-		CobolCoverageFile cobolFile = new CobolCoverageFile(file.getRelativePath(source))
+		CobolCoverageFile cobolFile = new CobolCoverageFile(file)
 		CobolCoverageMethod actualMethod = null
 
 		boolean procedureDivision = false
