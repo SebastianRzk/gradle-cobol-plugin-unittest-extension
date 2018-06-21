@@ -1,6 +1,5 @@
 package de.sebastianruziczka.cobolunit.coverage.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,19 +7,21 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.sebastianruziczka.api.CobolCodeType;
+import de.sebastianruziczka.cobolunit.CobolUnitSourceFile;
 import de.sebastianruziczka.cobolunit.coverage.CobolTraceMode;
 
 public class CobolCoverageFile {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CobolCoverageFile.class.getName());
 
-	private String name;
+	private CobolUnitSourceFile cobolUnitSourceFile;
 	private List<CobolCoverageMethod> methods = new ArrayList<>();
 	private int offsetDifference = -1;
 	private CobolTraceMode traceMode = null;
 
-	public CobolCoverageFile(String name) {
-		this.name = name;
+	public CobolCoverageFile(CobolUnitSourceFile cobolUnitSourceFile) {
+		this.cobolUnitSourceFile = cobolUnitSourceFile;
 	}
 
 	public void addMethod(CobolCoverageMethod method) {
@@ -32,16 +33,16 @@ public class CobolCoverageFile {
 	}
 
 	public String name() {
-		return this.name;
+		return this.cobolUnitSourceFile.getRelativePath(CobolCodeType.source);
 	}
 
 	public String simpleName() {
-		return new File(this.name).getName();
+		return this.cobolUnitSourceFile.baseFileName();
 	}
 
 	@Override
 	public String toString() {
-		return "CobolCoverageFile(" + this.name + ") { \n\t"
+		return "CobolCoverageFile(" + this.cobolUnitSourceFile.getRelativePath(CobolCodeType.source) + ") { \n\t"
 				+ this.methods.stream().map(Object::toString).reduce((y, x) -> x + ",\n\t" + y).orElse("") + "\n}";
 	}
 

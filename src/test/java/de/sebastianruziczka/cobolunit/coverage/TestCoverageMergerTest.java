@@ -9,6 +9,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import de.sebastianruziczka.CobolExtension;
+import de.sebastianruziczka.api.CobolSourceFile;
+import de.sebastianruziczka.cobolunit.CobolUnitSourceFile;
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageFile;
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageLine;
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageMethod;
@@ -60,8 +63,9 @@ public class TestCoverageMergerTest {
 	}
 
 	@Test
+
 	public void testParse_shouldDetectParagraph() {
-		CobolCoverageFile file = new CobolCoverageFile("Main");
+		CobolCoverageFile file = toCobolUnitSourceFile("Main");
 		List<CobolCoverageFile> files = Arrays.asList(file);
 		CobolCoverageMethod method = new CobolCoverageMethod("2000-COMPUTE-GREETING", 1);
 		method.setEnd(6);
@@ -75,9 +79,14 @@ public class TestCoverageMergerTest {
 		assertStatus(method, passed, not_passed, not_passed, not_passed, passed, not_passed);
 	}
 
+	private CobolCoverageFile toCobolUnitSourceFile(String name) {
+		return new CobolCoverageFile(
+				new CobolUnitSourceFile(new CobolSourceFile(new CobolExtension(), name), "", name + "UT"));
+	}
+
 	@Test
 	public void testParse_shouldHandlePathNames() {
-		CobolCoverageFile file = new CobolCoverageFile("src/main/cobol/Main");
+		CobolCoverageFile file = toCobolUnitSourceFile("src/main/cobol/Main");
 		List<CobolCoverageFile> files = Arrays.asList(file);
 		CobolCoverageMethod method = new CobolCoverageMethod("2000-COMPUTE-GREETING", 1);
 		method.setEnd(6);
@@ -93,7 +102,7 @@ public class TestCoverageMergerTest {
 
 	@Test
 	public void testParse_shouldSwitchParagraphs() {
-		CobolCoverageFile file = new CobolCoverageFile("Main");
+		CobolCoverageFile file = toCobolUnitSourceFile("Main");
 		List<CobolCoverageFile> files = Arrays.asList(file);
 		CobolCoverageMethod method1000 = new CobolCoverageMethod("1000-COMPUTE-GREETING", 100);
 		method1000.setEnd(104);
@@ -116,7 +125,7 @@ public class TestCoverageMergerTest {
 
 	@Test
 	public void testParse_shouldParseOpenCobol11Output() {
-		CobolCoverageFile file = new CobolCoverageFile("Main");
+		CobolCoverageFile file = toCobolUnitSourceFile("Main");
 		List<CobolCoverageFile> files = Arrays.asList(file);
 		CobolCoverageMethod method1000 = new CobolCoverageMethod("1000-COMPUTE-GREETING", 100);
 		method1000.setEnd(104);
@@ -139,7 +148,7 @@ public class TestCoverageMergerTest {
 
 	@Test
 	public void testParse_shouldParseOpenCobol11Output_andFixCommentsBeforeFirstStatement() {
-		CobolCoverageFile file = new CobolCoverageFile("Main");
+		CobolCoverageFile file = toCobolUnitSourceFile("Main");
 		List<CobolCoverageFile> files = Arrays.asList(file);
 		CobolCoverageMethod method1000 = new CobolCoverageMethod("1000-COMPUTE-GREETING", 100);
 		method1000.setEnd(104);
@@ -163,12 +172,12 @@ public class TestCoverageMergerTest {
 
 	@Test
 	public void testParse_shouldParseOpenCobol2Output_andTraceAcrossFiles() {
-		CobolCoverageFile fileMain1 = new CobolCoverageFile("Main1");
+		CobolCoverageFile fileMain1 = toCobolUnitSourceFile("Main1");
 		CobolCoverageMethod method1000 = new CobolCoverageMethod("1000-COMPUTE-GREETING", 100);
 		method1000.setEnd(104);
 		fileMain1.addMethod(method1000);
 
-		CobolCoverageFile fileMain2 = new CobolCoverageFile("Main2");
+		CobolCoverageFile fileMain2 = toCobolUnitSourceFile("Main2");
 		CobolCoverageMethod method2000 = new CobolCoverageMethod("2000-COMPUTE-GREETING", 200); //
 		method2000.setEnd(204);
 		fileMain2.addMethod(method2000);
