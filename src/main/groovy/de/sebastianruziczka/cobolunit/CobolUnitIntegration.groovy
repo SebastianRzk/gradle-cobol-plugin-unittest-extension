@@ -48,6 +48,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 			doFirst{
 				testOuput = this.testCoverageProvider
 				conf = this.configuration
+				coveragePrefix = "integration-"
 			}
 		}
 	}

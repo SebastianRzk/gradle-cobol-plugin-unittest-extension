@@ -14,6 +14,7 @@ class ComputeTestCoverageTask extends DefaultTask{
 
 	public OutputParserTestCoverageDecorator testOuput
 	public CobolExtension conf
+	public String coveragePrefix = ""
 
 	@TaskAction
 	public void computeTestCoverage() {
@@ -37,7 +38,7 @@ class ComputeTestCoverageTask extends DefaultTask{
 		}
 
 		String xml = new XMLReportWriter(this.conf).writeToXML(files)
-		File xmlOutput = new File(this.conf.absoluteUnitTestFrameworkPath(CobolUnit.class.getSimpleName()) + '/coverage.xml')
+		File xmlOutput = new File(this.conf.absoluteUnitTestFrameworkPath(CobolUnit.class.getSimpleName()) + '/' + this.coveragePrefix + 'coverage.xml')
 		xmlOutput << xml
 	}
 }
