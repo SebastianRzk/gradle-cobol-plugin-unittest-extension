@@ -39,9 +39,9 @@ public class TestCoverageMergerTest {
 		return "Program-Id: Main1            Statement: MOVE                   Line: 01\n" + //
 				"Program-Id: Main1            Paragraph: 1000-COMPUTE-GREETING  Line: 1000\n" + //
 				"Program-Id: Main1            Statement: STRING                 Line: 1001\n" + //
-				"Program-Id: Main2            Paragraph: 2000-COMPUTE-GREETING  Line: 1101\n" + //
-				"Program-Id: Main2            Statement: STRING                 Line: 1103\n" + //
-				"Program-Id: Main2            Statement: IF                     Line: 1104\n  \n";
+				"Program-Id: Main2            Paragraph: 2000-COMPUTE-GREETING  Line: 200\n" + //
+				"Program-Id: Main2            Statement: STRING                 Line: 201\n" + //
+				"Program-Id: Main2            Statement: IF                     Line: 202\n  \n";
 	}
 
 	private String openCobol11Ouput() {
@@ -178,7 +178,7 @@ public class TestCoverageMergerTest {
 		fileMain1.addMethod(method1000);
 
 		CobolCoverageFile fileMain2 = toCobolUnitSourceFile("Main2");
-		CobolCoverageMethod method2000 = new CobolCoverageMethod("2000-COMPUTE-GREETING", 200); //
+		CobolCoverageMethod method2000 = new CobolCoverageMethod("<not defined>", 200); //
 		method2000.setEnd(204);
 		fileMain2.addMethod(method2000);
 

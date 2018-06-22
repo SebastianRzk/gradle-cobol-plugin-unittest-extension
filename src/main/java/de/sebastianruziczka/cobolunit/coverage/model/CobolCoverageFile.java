@@ -46,19 +46,48 @@ public class CobolCoverageFile {
 				+ this.methods.stream().map(Object::toString).reduce((y, x) -> x + ",\n\t" + y).orElse("") + "\n}";
 	}
 
-	public void feedLine(String line, String nextLine) {
-
+	public void feedLineOfInitialFile(String line, String nextLine) {
 		int tracedLineNumber = getTraceNumberFrom(line, nextLine);
 		Optional<CobolCoverageMethod> actualMethod = null;
+
 		if (offsetDifference == -1 && this.traceMode.isParagraph(line)) {
 			actualMethod = getMethodForName(this.traceMode.parseParagraphName(line));
 			if (actualMethod.isPresent()) {
+				LOGGER.debug("Init Method offset for " + this.name());
+				LOGGER.debug("Traced Line Number: " + tracedLineNumber);
 				offsetDifference = tracedLineNumber - actualMethod.get().startLine() + 1;
+				LOGGER.debug("Source file method start: " + actualMethod.get().startLine());
+				LOGGER.debug("Offset difference: " + offsetDifference);
 				if (this.traceMode == CobolTraceMode.gnucobol1) {// Fix if first statement is not in first line
 					offsetDifference = offsetDifference - actualMethod.get().firstStatement();
 				}
 			}
 			return;
+		}
+
+		LOGGER.debug(tracedLineNumber + "");
+		LOGGER.debug("Offset " + offsetDifference);
+		LOGGER.debug("traced: " + (tracedLineNumber - offsetDifference));
+
+		if (offsetDifference == -1 || this.traceMode.isParagraph(line)) {
+			return;
+		}
+		actualMethod = getMethodForLineNumber(tracedLineNumber - offsetDifference);
+
+		if (!actualMethod.isPresent()) {
+			return;
+		}
+		actualMethod.get()
+				.setLineCoveredWithRelativeIndex(tracedLineNumber - offsetDifference - actualMethod.get().startLine());
+
+	}
+
+	public void feedLineOfCalledFile(String line, String nextLine) {
+		int tracedLineNumber = getTraceNumberFrom(line, nextLine);
+		Optional<CobolCoverageMethod> actualMethod = null;
+
+		if (this.offsetDifference == -1) {
+			this.offsetDifference = 0;
 		}
 
 		LOGGER.debug(tracedLineNumber + "");

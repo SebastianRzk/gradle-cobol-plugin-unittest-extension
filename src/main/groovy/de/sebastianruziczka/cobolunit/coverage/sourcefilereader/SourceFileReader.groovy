@@ -2,6 +2,9 @@ package de.sebastianruziczka.cobolunit.coverage.sourcefilereader
 
 import static de.sebastianruziczka.api.CobolCodeType.source
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.cobolunit.CobolUnitSourceFile
 import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageFile
@@ -9,7 +12,8 @@ import de.sebastianruziczka.cobolunit.coverage.model.CobolCoverageMethod
 
 class SourceFileReader {
 
-	private CobolExtension configuration;
+	private CobolExtension configuration
+	private static final Logger LOGGER = LoggerFactory.getLogger(SourceFileReader.class.getName())
 
 	public SourceFileReader(CobolExtension configuration) {
 		this.configuration = configuration
@@ -45,7 +49,7 @@ class SourceFileReader {
 			}
 
 			if (actualMethod == null) {
-				actualMethod = new CobolCoverageMethod(line.trim()[0..-2], lineIndex + 1)
+				actualMethod = new CobolCoverageMethod(this.getName(line), lineIndex + 1)
 				continue
 			}
 			if (line.isAllWhitespace()) {
@@ -53,12 +57,12 @@ class SourceFileReader {
 				continue
 			}
 
-			if (line.getAt(7) == '*') {
+			if (this.isComment(line)) {
 				actualMethod.addComment(lineIndex)
 				continue
 			}
 
-			if (line.getAt(7) == '-') {
+			if (this.isFollowing(line)) {
 				actualMethod.addFollowLine(lineIndex)
 				continue
 			}
@@ -77,6 +81,27 @@ class SourceFileReader {
 				actualMethod = new CobolCoverageMethod(line.trim()[0..-2], lineIndex + 1)
 			}
 		}
+		LOGGER.debug("SourcefileReader read file:")
+		LOGGER.debug(cobolFile.toString())
 		return cobolFile
+	}
+
+	private boolean isComment(String line) {
+		return line.getAt(7) == '*'
+	}
+
+	private boolean isFollowing(String line) {
+		return line.getAt(7) == '-';
+	}
+
+	private boolean isNoName(String line) {
+		return (this.isComment(line) || this.isFollowing(line) || line.getAt(7).equals(' '))
+	}
+
+	private String getName(String line) {
+		if(this.isNoName(line)) {
+			return '<no name set>'
+		}
+		return line.trim()[0..-2]
 	}
 }
