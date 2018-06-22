@@ -48,12 +48,12 @@ public enum CobolTraceMode {
 
 		@Override
 		public boolean isParagraph(String line) {
-			return "Paragraph:".equals(line.substring(29, 39));
+			return line.contains("Paragraph:");
 		}
 
 		@Override
 		public String parseParagraphName(String line) {
-			return line.substring(40, 63).trim();
+			return line.split("Paragraph:")[1].split("Line:")[0].trim();
 		}
 
 		@Override
