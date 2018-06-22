@@ -29,11 +29,11 @@ Further Reading:
 
 ## Supported versions
 
-| Compiler | Code format | unit test | testcoverage |
-| -------- | ----------- | ----------------------- | -------------------------- |
-| GnuCobol / Open Cobol 1.1 | fixed | full support | full support |
-| GnuCobol 2 | fixed | full support | full support |
-| GnuCobol 3rc | not tested | not tested | not tested |
+| Compiler | Code format | unit test | unit test testcoverage | integration test | integration test coverage | 
+| -------- | ----------- | --------- | ---------------------- | ---------------- | --------------------------|
+| GnuCobol / Open Cobol 1.1 | fixed | full support | full support | --- | --- |
+| GnuCobol 2 | fixed | full support | full support | full support | full support |
+| GnuCobol 3rc | fixed | full support | full support | full support | full support |
 
 
 
@@ -59,7 +59,7 @@ Or hardcode specific versions in your build.gradle (not preferred):
 
     buildscript {
     	 dependencies {
-    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: '0.0.24'
+    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: '0.0.25'
     	}
     }
 
