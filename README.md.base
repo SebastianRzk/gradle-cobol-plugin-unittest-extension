@@ -77,6 +77,21 @@ settings.gradle:
     	}
     }
 
+## Comparison unit <-> integration tests
+
+|   | unit test | integration test |
+| - | ---------| ---------------- |
+| gradle command | `testUnit` | `testIntegration` |
+| testcoverage | available 1) | available 2) |
+| compile strategy | compile test and target | compile all cobol sourcefiles |
+| ressource strategy | no ressources available | use sources in `/res/main/cobol` and `res/integrationtest/cobol/<testname>` |
+| failing test kills `check` | yes | yes |
+
+
+1)  set `unittestCodeCoverage = true` in your build gradle and execute tasks `testUnit computeTestcoverage`
+
+2) set `integrationtestCodeCoverage = true` in your build gradle and execute tasks `testUnit computeIntegrationTestCoverage`
+
 ## Unit tests
 
 File conventions:
