@@ -29,11 +29,11 @@ Further Reading:
 
 ## Supported versions
 
-| Compiler | Code format | unit test | testcoverage |
-| -------- | ----------- | ----------------------- | -------------------------- |
-| GnuCobol / Open Cobol 1.1 | fixed | full support | full support |
-| GnuCobol 2 | fixed | full support | full support |
-| GnuCobol 3rc | not tested | not tested | not tested |
+| Compiler | Code format | unit test | unit test testcoverage | integration test | integration test coverage | 
+| -------- | ----------- | --------- | ---------------------- | ---------------- | --------------------------|
+| GnuCobol / Open Cobol 1.1 | fixed | full support | full support | --- | --- |
+| GnuCobol 2 | fixed | full support | full support | full support | full support |
+| GnuCobol 3rc | fixed | full support | full support | full support | full support |
 
 
 
@@ -76,6 +76,21 @@ settings.gradle:
     		}
     	}
     }
+
+## Comparison unit <-> integration tests
+
+|   | unit test | integration test |
+| - | ---------| ---------------- |
+| gradle command | `testUnit` | `testIntegration` |
+| testcoverage | available 1) | available 2) |
+| compile strategy | compile test and target | compile all cobol sourcefiles |
+| ressource strategy | no ressources available | use sources in `/res/main/cobol` and `res/integrationtest/cobol/<testname>` |
+| failing test kills `check` | yes | yes |
+
+
+1)  set `unittestCodeCoverage = true` in your build gradle and execute tasks `testUnit computeTestcoverage`
+
+2) set `integrationtestCodeCoverage = true` in your build gradle and execute tasks `testUnit computeIntegrationTestCoverage`
 
 ## Unit tests
 
