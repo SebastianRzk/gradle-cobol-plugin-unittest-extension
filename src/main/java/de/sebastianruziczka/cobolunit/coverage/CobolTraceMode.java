@@ -37,13 +37,13 @@ public enum CobolTraceMode {
 			return line.substring("PROGRAM-ID:".length()).split("\t")[0].trim();
 		}
 	},
-	gnucobol2 {
+	gnucobol2or3 {
 		@Override
 		public int getLineNumberFor(String line, String followingLine) {
 			if (line.length() < 70) {
 				return -1;
 			}
-			return Integer.parseInt(line.substring(69).trim());
+			return Integer.parseInt(line.split("Line:")[1].trim());
 		}
 
 		@Override
@@ -64,7 +64,7 @@ public enum CobolTraceMode {
 
 	public static CobolTraceMode getTraceModeFor(String line) {
 		if (line.contains("Program-Id:")) {
-			return CobolTraceMode.gnucobol2;
+			return CobolTraceMode.gnucobol2or3;
 		}
 		return CobolTraceMode.gnucobol1;
 	}
