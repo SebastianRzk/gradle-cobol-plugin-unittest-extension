@@ -58,7 +58,7 @@ public enum CobolTraceMode {
 
 		@Override
 		public String parseProgrammID(String line) {
-			return line.substring("Program-Id: ".length()).split(" ")[0].trim();
+			return line.substring("Program-Id: ".length()).trim().split(" ")[0].trim();
 		}
 	};
 
