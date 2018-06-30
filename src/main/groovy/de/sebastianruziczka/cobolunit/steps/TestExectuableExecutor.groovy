@@ -25,8 +25,11 @@ class TestExectuableExecutor {
 				executableDir,
 				'Execute Unittest '+ file.getMeta(BUILD_TEST_EXECFILE_PATH),
 				file.getMeta(BUILD_TEST_EXEC_LOG_PATH))
+
+		processWrapper.setEnvironmentVariable('COB_EXIT_WAIT', 'off')
 		if (this.configuration.unittestCodeCoverage) {
 			processWrapper.setEnvironmentVariable('COB_SET_TRACE', 'Y')
+			processWrapper.setEnvironmentVariable('COB_TRACE_FILE', file.testCoverageFilePath())
 		}
 
 		processWrapper.exec(true)

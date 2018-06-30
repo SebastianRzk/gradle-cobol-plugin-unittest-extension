@@ -81,7 +81,7 @@ public class TestCoverageMergerTest {
 
 	private CobolCoverageFile toCobolUnitSourceFile(String name) {
 		return new CobolCoverageFile(
-				new CobolUnitSourceFile(new CobolSourceFile(new CobolExtension(), name), "", name + "UT"));
+				new CobolUnitSourceFile(new CobolSourceFile(new CobolExtension(), name), "", name + "UT", null));
 	}
 
 	@Test

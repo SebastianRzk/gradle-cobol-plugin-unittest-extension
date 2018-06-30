@@ -12,7 +12,7 @@ import de.sebastianruziczka.cobolunit.coverage.sourcefilereader.SourceFileReader
 
 class ComputeTestCoverageTask extends DefaultTask{
 
-	public OutputParserTestCoverageDecorator testOuput
+	public Map<CobolUnitSourceFile, List<String>> testOuput
 	public CobolExtension conf
 	public String coveragePrefix = ""
 
@@ -26,14 +26,14 @@ class ComputeTestCoverageTask extends DefaultTask{
 		def allSourceFiles = project.fileTree(sourceFileLocation).include(this.conf.filetypePattern())
 		allSourceFiles.each { File file ->
 			String relativePath = file.absolutePath.replaceAll(sourceFileLocation, "").substring(1)
-			files << new SourceFileReader(this.conf).read(new CobolUnitSourceFile(new CobolSourceFile(this.conf, relativePath), null, null))
+			files << new SourceFileReader(this.conf).read(new CobolUnitSourceFile(new CobolSourceFile(this.conf, relativePath), null, null, null))
 		}
 
 		if (this.testOuput == null) {
 			logger.warn('No testcoverage found!')
 		}else {
-			for (CobolUnitSourceFile file : this.testOuput.testCoverageFiles()) {
-				testCoverageResolver.resolve(files, this.testOuput.getCoverageOutput(file))
+			for (CobolUnitSourceFile file : this.testOuput.keySet()) {
+				testCoverageResolver.resolve(files, this.testOuput.get(file))
 			}
 		}
 
