@@ -12,9 +12,9 @@ class TestCoverageResolver {
 	}
 
 
-	public List<CobolCoverageFile> resolve(List<CobolCoverageFile> files, List<String> logOuput) {
+	public List<CobolCoverageFile> resolve(List<CobolCoverageFile> files, String logOuput) {
 		TestCoverageMerger merger = new TestCoverageMerger()
-		merger.merge(files, logOuput)
+		merger.merge(files, Arrays.asList(logOuput.split('\n')))
 		return files
 	}
 }

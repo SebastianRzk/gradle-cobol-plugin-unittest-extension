@@ -66,7 +66,10 @@ public enum CobolTraceMode {
 		if (line.contains("Program-Id:")) {
 			return CobolTraceMode.gnucobol2or3;
 		}
-		return CobolTraceMode.gnucobol1;
+		if (line.contains("PROGRAM-ID:")) {
+			return CobolTraceMode.gnucobol1;
+		}
+		return null;
 	}
 
 	public abstract int getLineNumberFor(String line, String followingLine);

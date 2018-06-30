@@ -24,9 +24,29 @@ cd ..
 cd ..
 echo "<<<<<<<"
 
+echo ">>>>>>> install gnu cobol"
+cd endToEndTest/gradle-cobol-plugin-example/
+sh ci/install_requirements.sh
+cd ..
+cd ..
+echo "<<<<<<<"
+
+
 echo ">>>>>>> exec test"
 cd endToEndTest/gradle-cobol-plugin-example/project-cobol-unit-test
 gradle check
 gradle testUnit computeTestCoverage  --refresh-dependencies --debug 
 cat build/CobolUnit/coverage.xml
+cd ..
+cd ..
+cd ..
 echo "<<<<<<<"
+
+
+echo ">>>>>>> exec test"
+cd endToEndTest/gradle-cobol-plugin-example/project-cobol-integration-test
+gradle check
+gradle testIntegration computeIntegrationTestCoverage  --refresh-dependencies --debug
+cat build/CobolUnit/integration-coverage.xml
+echo "<<<<<<<"
+
