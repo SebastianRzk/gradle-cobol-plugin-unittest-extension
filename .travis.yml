@@ -12,3 +12,4 @@ script:
      - gradle --version
      - gradle check
      - sh ci/execExampleTests.sh
+     - l /home/travis/build/RosesTheN00b/gradle-cobol-plugin-unittest-extension/endToEndTest/gradle-cobol-plugin-example/project-cobol-unit-test/build/CobolUnit/src/test/cobol/coveredPackage/ # for debug 
