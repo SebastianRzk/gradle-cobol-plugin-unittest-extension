@@ -9,11 +9,14 @@ public class CobolUnitSourceFile {
 	private String frameworkpath;
 	private String originalTestFile;
 	private String fixedTestFilePath = null;
+	private TestCoverageIs testCoverageStatus;
 
-	public CobolUnitSourceFile(CobolSourceFile sourcefile, String frameworkpath, String originalTestFile) {
+	public CobolUnitSourceFile(CobolSourceFile sourcefile, String frameworkpath, String originalTestFile,
+			TestCoverageIs testCoverageStatus) {
 		this.sourcefile = sourcefile;
 		this.frameworkpath = frameworkpath;
 		this.originalTestFile = originalTestFile;
+		this.testCoverageStatus = testCoverageStatus;
 	}
 
 	public String actualTestfilePath() {
@@ -57,6 +60,14 @@ public class CobolUnitSourceFile {
 
 	public String baseFileName() {
 		return this.sourcefile.baseFileName();
+	}
+
+	public TestCoverageIs testCoverage() {
+		return this.testCoverageStatus;
+	}
+
+	public String testCoverageFilePath() {
+		return this.actualTestfilePath() + ".TESTCOVERAGE";
 	}
 
 }

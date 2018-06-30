@@ -45,12 +45,18 @@ class TestCoverageMerger {
 		if (this.traceMode == null) {
 			this.traceMode = CobolTraceMode.getTraceModeFor(line);
 		}
+
+		if (this.traceMode == null) {
+			return Optional.empty();
+		}
+
 		String programmID = this.traceMode.parseProgrammID(line);
 		LOGGER.debug("Resolved Programm ID: " + programmID);
 		for (CobolCoverageFile file : files) {
 			if (file.simpleName().equals(programmID)) {
 				return Optional.of(file);
 			}
+			LOGGER.debug("No match: " + programmID + "<>" + file.simpleName());
 		}
 		LOGGER.debug("No file with id found");
 		LOGGER.debug("FoundFiles: ");

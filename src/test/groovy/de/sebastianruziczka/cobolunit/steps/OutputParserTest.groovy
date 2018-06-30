@@ -10,7 +10,6 @@ import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.buildcycle.test.TestMethod
 import de.sebastianruziczka.buildcycle.test.TestMethodResult
 import de.sebastianruziczka.cobolunit.CobolUnitSourceFile
-import de.sebastianruziczka.cobolunit.steps.OutputParser
 
 class OutputParserTest {
 
@@ -49,7 +48,7 @@ class OutputParserTest {
 	}
 
 	CobolUnitSourceFile fileStub() {
-		return new CobolUnitSourceFile(new CobolSourceFileStub(), "", "")
+		return new CobolUnitSourceFile(new CobolSourceFileStub(), "", "", null)
 	}
 }
 class CobolSourceFileStub extends CobolSourceFile{

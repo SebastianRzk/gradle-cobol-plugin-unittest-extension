@@ -1,5 +1,6 @@
 package de.sebastianruziczka.cobolunit
 
+
 import static de.sebastianruziczka.api.CobolCodeType.unit_test
 import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.ABSOLUTE_FIXED_UNITTEST_PATH
 
@@ -14,7 +15,6 @@ import de.sebastianruziczka.api.CobolTestFramework
 import de.sebastianruziczka.api.CobolUnitFrameworkProvider
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.cobolunit.coverage.ComputeTestCoverageTask
-import de.sebastianruziczka.cobolunit.coverage.OutputParserTestCoverageDecorator
 import de.sebastianruziczka.cobolunit.coverage.linefix.FixedFileConverter
 import de.sebastianruziczka.cobolunit.coverage.linefix.UnitTestLineFixer
 import de.sebastianruziczka.cobolunit.steps.OutputParser
@@ -32,7 +32,7 @@ class CobolUnit implements CobolTestFramework{
 	private def defaultConf = ["ZUTZCWS", "SAMPLET"]
 	private final static DEFAULT_CONF_NAME = 'DEFAULT.CONF'
 	private String pluginName = null
-	private OutputParserTestCoverageDecorator testCoverageProvider;
+	private Map<CobolUnitSourceFile, List<String>> coverageOutput = new HashMap()
 	private ZUTZCPC zutzcpc = null;
 
 	@Override
@@ -46,7 +46,7 @@ class CobolUnit implements CobolTestFramework{
 			description: 'Generates a testcoverage xml (cobertura-style)'
 
 			doFirst{
-				testOuput = this.testCoverageProvider
+				testOuput = this.coverageOutput
 				conf = this.configuration
 			}
 		}
@@ -82,7 +82,16 @@ class CobolUnit implements CobolTestFramework{
 	public TestFile test(CobolSourceFile file) {
 		String testName = file.getRelativePath(unit_test)
 
-		CobolUnitSourceFile unitSourceFile = new CobolUnitSourceFile(file, this.frameworkBin(), this.frameworkBin() + '/' + file.getRelativePath(unit_test))
+		TestCoverageIs coverage = TestCoverageIs.Disabled
+		if (this.configuration.unittestCodeCoverage) {
+			coverage = TestCoverageIs.Enabled
+		}
+
+		CobolUnitSourceFile unitSourceFile = new CobolUnitSourceFile(file,//
+				this.frameworkBin(),//
+				this.frameworkBin() + '/' + file.getRelativePath(unit_test),//
+				coverage
+				)
 
 		String testBuildPath = this.frameworkBin() + '/' + testName
 		File buildTestModule = new File(this.getParent(testBuildPath))
@@ -112,11 +121,9 @@ class CobolUnit implements CobolTestFramework{
 	private TestFile parseProcessOutput(String processOutput, CobolUnitSourceFile file) {
 		List<String> lines = Arrays.asList(processOutput.split(System.getProperty('line.separator')))
 		OutputParser parser = new OutputParser(this.configuration)
-		if (this.configuration.unittestCodeCoverage) {
-			if (this.testCoverageProvider == null) {
-				this.testCoverageProvider = new OutputParserTestCoverageDecorator(parser)
-			}
-			this.testCoverageProvider.parse(file, lines)
+
+		if (file.testCoverage() == TestCoverageIs.Enabled) {
+			this.coverageOutput.put(file, new File(file.testCoverageFilePath()).text)
 		}
 		return parser.parse(file, lines)
 	}
@@ -146,6 +153,6 @@ class CobolUnit implements CobolTestFramework{
 
 	@Override
 	public void clean() {
-		this.testCoverageProvider = null
+		this.coverageOutput = new HashMap()
 	}
 }

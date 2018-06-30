@@ -207,7 +207,7 @@ class SourceFileReaderTest {
 	}
 
 	CobolUnitSourceFile fileStub() {
-		return new CobolUnitSourceFile(new CobolSourceFileStub(), null, null)
+		return new CobolUnitSourceFile(new CobolSourceFileStub(), null, null, null)
 	}
 }
 class CobolSourceFileStub extends CobolSourceFile{
