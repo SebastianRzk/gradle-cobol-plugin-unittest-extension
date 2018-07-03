@@ -30,6 +30,11 @@ class TestExectuableExecutor {
 		if (this.configuration.unittestCodeCoverage) {
 			processWrapper.setEnvironmentVariable('COB_SET_TRACE', 'Y')
 			processWrapper.setEnvironmentVariable('COB_TRACE_FILE', file.testCoverageFilePath())
+			processWrapper.setEnvironmentVariable('COBC_INTERACTIVE', 'N')
+
+			for (String key : this.configuration.additionalRuntimeEnvironmentVariables.keySet()) {
+				processWrapper.setEnvironmentVariable(key, this.configuration.additionalRuntimeEnvironmentVariables.get(key))
+			}
 		}
 
 		processWrapper.exec(true)

@@ -18,7 +18,6 @@ class ComputeTestCoverageTask extends DefaultTask{
 
 	@TaskAction
 	public void computeTestCoverage() {
-		TestCoverageResolver testCoverageResolver = new TestCoverageResolver(this.conf)
 		def files = []
 		Set<String> computedFiles = new HashSet<>()
 
@@ -33,7 +32,7 @@ class ComputeTestCoverageTask extends DefaultTask{
 			logger.warn('No testcoverage found!')
 		}else {
 			for (CobolUnitSourceFile file : this.testOuput.keySet()) {
-				testCoverageResolver.resolve(files, this.testOuput.get(file))
+				new TestCoverageMerger().merge(files, Arrays.asList(this.testOuput.get(file).split('\n')))
 			}
 		}
 
