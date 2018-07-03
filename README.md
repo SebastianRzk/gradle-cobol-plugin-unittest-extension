@@ -63,7 +63,7 @@ Or hardcode specific versions in your build.gradle (not preferred):
     }
 
     plugins {
-    	id 'de.sebastianruziczka.Cobol' version '0.0.36'
+    	id 'de.sebastianruziczka.Cobol' version '0.0.37'
     }
 
 settings.gradle:
@@ -84,6 +84,7 @@ settings.gradle:
 | testcoverage | available 1) | available 2) |
 | compile strategy | compile test and target | compile all cobol sourcefiles |
 | ressource strategy | no ressources available | use sources in `/res/main/cobol` and `res/integrationtest/cobol/<testname>` |
+| additional env variables | COBC_INTERACTIVE='N' | COBC_INTERACTIVE='N' |
 | failing test kills `check` | yes | yes |
 
 
