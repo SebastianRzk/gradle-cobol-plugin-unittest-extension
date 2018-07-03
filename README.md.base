@@ -18,8 +18,7 @@ The new source code if fully backward compatible, but enables new features:
 ## Gradle-cobol environment
 
 * [![Build Status](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin.svg?branch=master)](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin)  [gradle-cobol-plugin](https://gradle-cobol.sebastianruziczka.de) The base gradle plugin (compile, run)
-* [![Build Status](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin-unittest-extension.svg?branch=master)](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin-unittest-extension)  
-[gradle-cobol-plugin-unittest-extension](https://gradle-cobol-unit.sebastianruziczka.de) Adds unittests and testcoverage to the base plugin
+* [![Build Status](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin-unittest-extension.svg?branch=master)](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin-unittest-extension)[gradle-cobol-plugin-unittest-extension](https://gradle-cobol-unit.sebastianruziczka.de) Adds unittests and testcoverage to the base plugin
 * [![Build Status](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin-example.svg?branch=master)](https://travis-ci.org/RosesTheN00b/gradle-cobol-plugin-example)[![codecov](https://codecov.io/gh/RosesTheN00b/gradle-cobol-plugin-example/branch/master/graph/badge.svg)](https://codecov.io/gh/RosesTheN00b/gradle-cobol-plugin-example)[gradle-cobol-plugin-example](https://github.com/RosesTheN00b/gradle-cobol-plugin-example) This Project contains many gradle-cobol example projects
 
 Further Reading:
@@ -51,7 +50,7 @@ build.gradle:
     }
 
     plugins {
-    	id 'de.sebastianruziczka.Cobol' version 'latest' apply false
+    	id 'de.sebastianruziczka.Cobol' version 'latest'
     }
 
 
@@ -64,7 +63,7 @@ Or hardcode specific versions in your build.gradle (not preferred):
     }
 
     plugins {
-    	id 'de.sebastianruziczka.Cobol' version '0.0.23' apply false
+    	id 'de.sebastianruziczka.Cobol' version '0.0.36'
     }
 
 settings.gradle:
