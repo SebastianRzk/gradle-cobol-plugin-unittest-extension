@@ -31,14 +31,12 @@ public class OutputParser {
 				String name = actualLine.substring('     PASS:   '.length()).trim()
 				result.addTestMethod(new TestMethod(name, TestMethodResult.SUCCESSFUL, '', console.join('\n')))
 				console = []
-				lineNumber ++
 			}
 			else if (actualLine.startsWith('**** FAIL:   ')) {
 				String name = actualLine.substring('**** FAIL:   '.length()).trim()
 				String compareResult = lines.get(lineNumber + 1)
 				result.addTestMethod(new TestMethod(name, TestMethodResult.FAILED, compareResult.trim(), console.join('\n')))
 				console = []
-				lineNumber ++
 			}else {
 				console << actualLine
 			}
