@@ -1,9 +1,6 @@
 package de.sebastianruziczka.cobolunit
 
 
-import static de.sebastianruziczka.api.CobolCodeType.unit_test
-import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.ABSOLUTE_FIXED_UNITTEST_PATH
-
 import org.gradle.api.Project
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -115,7 +112,7 @@ class CobolUnit implements CobolTestFramework{
 		logger.info('Preprocess Test: ' + testName)
 		this.zutzcpc.preprocessTest(unitSourceFile, this.defaultConfPath(), CobolCodeType.unit_test)
 
-		if(this.configuration.unittestCodeCoverage) {
+		if(coverage == TestCoverageIs.Enabled) {
 			unitSourceFile.modifyTestModulePath(this.frameworkBin() + '/' + new FixedFileConverter(this.configuration).fromOriginalToFixed(file.getRelativePath(unit_test)))
 			file.setMeta(ABSOLUTE_FIXED_UNITTEST_PATH, this.configuration.projectFileResolver(unitSourceFile.actualTestfilePath()).absolutePath)
 
