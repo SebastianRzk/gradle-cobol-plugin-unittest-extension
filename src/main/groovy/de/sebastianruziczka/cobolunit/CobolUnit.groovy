@@ -1,6 +1,8 @@
 package de.sebastianruziczka.cobolunit
 
 
+import static de.sebastianruziczka.api.CobolCodeType.unit_test
+
 import org.gradle.api.Project
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
