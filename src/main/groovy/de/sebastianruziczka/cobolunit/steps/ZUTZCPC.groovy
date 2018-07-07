@@ -56,8 +56,16 @@ class ZUTZCPC {
 		return this.path + '/' + MAIN_FRAMEWORK_PROGRAMM
 	}
 
-	private String frameworkBinPath() {
+	public String frameworkBinPath() {
 		return this.path + '/' + MAIN_FRAMEWORK_BIN
+	}
+
+	public def outputFilePaths() {
+		return [
+			this.frameworkBinPath(),
+			this.path + '/ZUTZCPD.CPY',
+			this.path +'/ZUTZCWS.CPY'
+		]
 	}
 
 	private int compileTestFramework() {

@@ -40,8 +40,24 @@ class CobolUnit implements CobolTestFramework{
 		this.configuration = configuration
 		this.project = project
 
-		this.project.task('computeTestCoverage', type:ComputeTestCoverageTask){
+		ZUTZCPC zutzcpcInstance =  new ZUTZCPC(this.frameworkBase(), this.configuration)
+		this.zutzcpc = zutzcpcInstance
 
+
+		/**
+		 * Maybe the precompiler task is already defined (by the integrationtest->configure)
+		 */
+		if(! project.tasks.findByName('compileZUTZCPC')){
+			this.project.task('compileZUTZCPC', type:CompileZUTZCPC){
+				project = project
+				group = 'COBOL UNIT'
+				description = 'Compiles the cobol unittest precompiler (ZUTZCPC)'
+				zutzcpc = zutzcpcInstance
+			}
+		}
+		this.project.tasks.testUnit.dependsOn << this.project.tasks.compileZUTZCPC
+
+		this.project.task('computeTestCoverage', type:ComputeTestCoverageTask){
 			group: 'COBOL Development'
 			description: 'Generates a testcoverage xml (cobertura-style)'
 
@@ -54,10 +70,6 @@ class CobolUnit implements CobolTestFramework{
 
 	@Override
 	int prepare() {
-		logger.info('Setup ZUTZCPC test framework')
-		this.zutzcpc = new ZUTZCPC(this.frameworkBin(), this.configuration)
-		this.zutzcpc.setup()
-
 		logger.info('Create default test.conf')
 		this.createTestConf()
 		return 0
@@ -75,7 +87,7 @@ class CobolUnit implements CobolTestFramework{
 	}
 
 	private String defaultConfPath() {
-		return this.frameworkBin() + '/' + DEFAULT_CONF_NAME
+		return this.frameworkBin() + DEFAULT_CONF_NAME
 	}
 
 	@Override
@@ -103,7 +115,7 @@ class CobolUnit implements CobolTestFramework{
 		logger.info('Preprocess Test: ' + testName)
 		this.zutzcpc.preprocessTest(unitSourceFile, this.defaultConfPath(), CobolCodeType.unit_test)
 
-		if(this.configuration.unittestCodeCoverage) {
+		if(coverage == TestCoverageIs.Enabled) {
 			unitSourceFile.modifyTestModulePath(this.frameworkBin() + '/' + new FixedFileConverter(this.configuration).fromOriginalToFixed(file.getRelativePath(unit_test)))
 			file.setMeta(ABSOLUTE_FIXED_UNITTEST_PATH, this.configuration.projectFileResolver(unitSourceFile.actualTestfilePath()).absolutePath)
 
@@ -130,6 +142,10 @@ class CobolUnit implements CobolTestFramework{
 
 	private String frameworkBin() {
 		return this.configuration.absoluteUnitTestFrameworkPath(this.getClass().getSimpleName())
+	}
+
+	private String frameworkBase() {
+		return this.frameworkBin()
 	}
 
 	private String getParent(String path) {
