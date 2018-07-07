@@ -32,12 +32,24 @@ class CobolUnitIntegration implements CobolTestFramework{
 	private final static DEFAULT_CONF_NAME = 'DEFAULT.CONF'
 	private String pluginName = null
 	private Map<CobolUnitSourceFile, List<String>> coverageOutput
-	private ZUTZCPC zutzcpc = null
+	private ZUTZCPC zutzcpc
 
 	@Override
 	void configure(CobolExtension configuration, Project project) {
 		this.configuration = configuration
 		this.project = project
+
+		ZUTZCPC zutzcpcInstance =  new ZUTZCPC(this.frameworkBase(), this.configuration)
+		this.zutzcpc = zutzcpcInstance
+
+		if(! project.tasks.findByName('compileZUTZCPC')){
+			this.project.task('compileZUTZCPC', type:CompileZUTZCPC){
+				project = project
+				zutzcpc = zutzcpcInstance
+			}
+		}
+		this.project.tasks.testIntegration.dependsOn << this.project.tasks.compileZUTZCPC
+
 
 		this.project.task('computeIntegrationTestCoverage', type:ComputeTestCoverageTask){
 
@@ -54,10 +66,6 @@ class CobolUnitIntegration implements CobolTestFramework{
 
 	@Override
 	int prepare() {
-		logger.info('Setup ZUTZCPC test framework')
-		this.zutzcpc = new ZUTZCPC(this.frameworkBin(), this.configuration)
-		this.zutzcpc.setup()
-
 		logger.info('Create default test.conf')
 		this.createTestConf()
 		return 0
@@ -75,7 +83,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 	}
 
 	private String defaultConfPath() {
-		return this.frameworkBin() + '/' + DEFAULT_CONF_NAME
+		return this.frameworkBase() + '/' + DEFAULT_CONF_NAME
 	}
 
 	@Override
@@ -130,7 +138,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 		}
 
 		logger.info('Compile Test: ' + unitSourceFile.actualTestfilePath())
-		new TestDebugCompiler(this.configuration, this.frameworkBin()).compileTest(unitSourceFile)
+		new TestDebugCompiler(this.configuration, this.frameworkBase()).compileTest(unitSourceFile)
 		logger.info('Run Test: ' + unitSourceFile.actualTestfilePath())
 		String result = new TestDebugExecutor(this.configuration).executeTest(unitSourceFile)
 
@@ -148,8 +156,12 @@ class CobolUnitIntegration implements CobolTestFramework{
 		return parser.parse(file, lines)
 	}
 
+	private String frameworkBase() {
+		return this.configuration.absoluteUnitTestFrameworkPath(CobolUnit.getSimpleName()) + '/'
+	}
+
 	private String frameworkBin() {
-		return this.configuration.absoluteUnitTestFrameworkPath(CobolUnit.getSimpleName()) + '/integration'
+		return this.frameworkBase()+ 'integration'
 	}
 
 	private String testBin(CobolSourceFile test) {

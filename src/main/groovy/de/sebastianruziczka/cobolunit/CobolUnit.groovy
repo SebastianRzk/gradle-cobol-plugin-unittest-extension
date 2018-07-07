@@ -40,6 +40,17 @@ class CobolUnit implements CobolTestFramework{
 		this.configuration = configuration
 		this.project = project
 
+		ZUTZCPC zutzcpcInstance =  new ZUTZCPC(this.frameworkBase(), this.configuration)
+		this.zutzcpc = zutzcpcInstance
+
+		if(! project.tasks.findByName('compileZUTZCPC')){
+			this.project.task('compileZUTZCPC', type:CompileZUTZCPC){
+				project = project
+				zutzcpc = zutzcpcInstance
+			}
+		}
+		this.project.tasks.testUnit.dependsOn << this.project.tasks.compileZUTZCPC
+
 		this.project.task('computeTestCoverage', type:ComputeTestCoverageTask){
 
 			group: 'COBOL Development'
@@ -54,10 +65,6 @@ class CobolUnit implements CobolTestFramework{
 
 	@Override
 	int prepare() {
-		logger.info('Setup ZUTZCPC test framework')
-		this.zutzcpc = new ZUTZCPC(this.frameworkBin(), this.configuration)
-		this.zutzcpc.setup()
-
 		logger.info('Create default test.conf')
 		this.createTestConf()
 		return 0
@@ -75,7 +82,7 @@ class CobolUnit implements CobolTestFramework{
 	}
 
 	private String defaultConfPath() {
-		return this.frameworkBin() + '/' + DEFAULT_CONF_NAME
+		return this.frameworkBin() + DEFAULT_CONF_NAME
 	}
 
 	@Override
@@ -130,6 +137,10 @@ class CobolUnit implements CobolTestFramework{
 
 	private String frameworkBin() {
 		return this.configuration.absoluteUnitTestFrameworkPath(this.getClass().getSimpleName())
+	}
+
+	private String frameworkBase() {
+		return this.frameworkBin()
 	}
 
 	private String getParent(String path) {
