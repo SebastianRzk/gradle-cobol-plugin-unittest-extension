@@ -43,16 +43,21 @@ class CobolUnit implements CobolTestFramework{
 		ZUTZCPC zutzcpcInstance =  new ZUTZCPC(this.frameworkBase(), this.configuration)
 		this.zutzcpc = zutzcpcInstance
 
+
+		/**
+		 * Maybe the precompiler task is already defined (by the integrationtest->configure)
+		 */
 		if(! project.tasks.findByName('compileZUTZCPC')){
 			this.project.task('compileZUTZCPC', type:CompileZUTZCPC){
 				project = project
+				group = 'COBOL UNIT'
+				description = 'Compiles the cobol unittest precompiler (ZUTZCPC)'
 				zutzcpc = zutzcpcInstance
 			}
 		}
 		this.project.tasks.testUnit.dependsOn << this.project.tasks.compileZUTZCPC
 
 		this.project.task('computeTestCoverage', type:ComputeTestCoverageTask){
-
 			group: 'COBOL Development'
 			description: 'Generates a testcoverage xml (cobertura-style)'
 

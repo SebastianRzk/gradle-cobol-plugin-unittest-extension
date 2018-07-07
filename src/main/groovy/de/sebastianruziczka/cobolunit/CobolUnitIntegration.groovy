@@ -42,13 +42,24 @@ class CobolUnitIntegration implements CobolTestFramework{
 		ZUTZCPC zutzcpcInstance =  new ZUTZCPC(this.frameworkBase(), this.configuration)
 		this.zutzcpc = zutzcpcInstance
 
-		if(! project.tasks.findByName('compileZUTZCPC')){
+		/**
+		 * Maybe the precompiler task is already defined (by the unittest->configure)
+		 */
+		if(!project.tasks.findByName('compileZUTZCPC')){
 			this.project.task('compileZUTZCPC', type:CompileZUTZCPC){
 				project = project
 				zutzcpc = zutzcpcInstance
 			}
 		}
+		/**
+		 * Add dependency for the precompiler (zutzcpc)
+		 */
 		this.project.tasks.testIntegration.dependsOn << this.project.tasks.compileZUTZCPC
+
+		/**
+		 * Build all cobol source files as module with code coverage option
+		 */
+		this.project.tasks.testIntegration.dependsOn << this.project.tasks.buildDebugWithTracing
 
 
 		this.project.task('computeIntegrationTestCoverage', type:ComputeTestCoverageTask){
