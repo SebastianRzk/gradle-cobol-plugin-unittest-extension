@@ -2,6 +2,7 @@ package de.sebastianruziczka.cobolunit
 
 
 import static de.sebastianruziczka.api.CobolCodeType.unit_test
+import static de.sebastianruziczka.cobolunit.CobolUnitMetaKeys.ABSOLUTE_FIXED_UNITTEST_PATH
 
 import org.gradle.api.Project
 import org.slf4j.Logger
