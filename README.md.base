@@ -90,7 +90,7 @@ settings.gradle:
 
 1)  set `unittestCodeCoverage = true` in your build gradle and execute tasks `testUnit computeTestcoverage`
 
-2) set `integrationtestCodeCoverage = true` in your build gradle and execute tasks `testUnit computeIntegrationTestCoverage`
+2) set `integrationtestCodeCoverage = true` in your build gradle and execute tasks `testIntegration computeIntegrationTestCoverage`
 
 ## Unit tests
 
