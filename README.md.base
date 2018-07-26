@@ -63,7 +63,7 @@ Or hardcode specific versions in your build.gradle (not preferred):
     }
 
     plugins {
-    	id 'de.sebastianruziczka.Cobol' version '0.0.38'
+    	id 'de.sebastianruziczka.Cobol' version '0.0.40'
     }
 
 settings.gradle:
