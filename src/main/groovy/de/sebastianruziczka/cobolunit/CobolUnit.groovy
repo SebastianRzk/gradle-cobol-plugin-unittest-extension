@@ -12,7 +12,7 @@ import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.api.CobolCodeType
 import de.sebastianruziczka.api.CobolSourceFile
 import de.sebastianruziczka.api.CobolTestFramework
-import de.sebastianruziczka.api.CobolUnitFrameworkProvider
+import de.sebastianruziczka.api.CobolUnitTestFrameworkProvider
 import de.sebastianruziczka.buildcycle.test.TestFile
 import de.sebastianruziczka.cobolunit.coverage.ComputeTestCoverageTask
 import de.sebastianruziczka.cobolunit.coverage.linefix.FixedFileConverter
@@ -23,7 +23,7 @@ import de.sebastianruziczka.cobolunit.steps.TestExectuableExecutor
 import de.sebastianruziczka.cobolunit.steps.ZUTZCPC
 import de.sebastianruziczka.metainf.MetaInfPropertyResolver
 
-@CobolUnitFrameworkProvider
+@CobolUnitTestFrameworkProvider
 class CobolUnit implements CobolTestFramework{
 	Logger logger = LoggerFactory.getLogger('cobolUnit')
 
@@ -77,7 +77,7 @@ class CobolUnit implements CobolTestFramework{
 
 	private void createTestConf() {
 		String path = this.defaultConfPath()
-		logger.info('Using Path: '+path)
+		logger.info('Using Path: ' + path)
 		def defaultConfFile = new File(path)
 		defaultConfFile.delete()
 
