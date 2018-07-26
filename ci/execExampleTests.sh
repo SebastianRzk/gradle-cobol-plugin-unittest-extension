@@ -36,7 +36,7 @@ echo ">>>>>>> exec test"
 cd endToEndTest/gradle-cobol-plugin-example/project-cobol-unit-test
 gradle check
 #gradle testUnit computeTestCoverage  --refresh-dependencies --debug 
-cat build/CobolUnit/coverage.xml
+#cat build/CobolUnit/coverage.xml
 cd ..
 cd ..
 cd ..
