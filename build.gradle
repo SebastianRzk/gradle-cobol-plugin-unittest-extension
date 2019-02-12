@@ -30,6 +30,9 @@ def applicationName = "CobolPluginUnitTestExtension"
 group = 'de.sebastianruziczka'
 version = '0.0.30'
 def realVersion = ''
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8' 
+
 if (project.hasProperty("generateLatest")) {
 	realVersion = ' (' + version + ')'
 	version = 'latest'
