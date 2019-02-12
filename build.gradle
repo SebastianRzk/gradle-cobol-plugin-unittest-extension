@@ -16,12 +16,12 @@ repositories {
 
 dependencies {
 	compileOnly gradleApi()
-	compileOnly group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin', version: 'latest'
+	compileOnly group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-core', version: 'latest'
 	
 	testCompile group: 'junit', name: 'junit', version: '4.+'
 	testCompile group: 'org.mockito', name: 'mockito-core', version: '2.+'
 	testCompile group: 'org.assertj', name: 'assertj-core', version: '3.+'
-	testCompile group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin', version: 'latest'
+	testCompile group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-core', version: 'latest'
 	
 	}
 
@@ -30,6 +30,9 @@ def applicationName = "CobolPluginUnitTestExtension"
 group = 'de.sebastianruziczka'
 version = '0.0.30'
 def realVersion = ''
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8' 
+
 if (project.hasProperty("generateLatest")) {
 	realVersion = ' (' + version + ')'
 	version = 'latest'
