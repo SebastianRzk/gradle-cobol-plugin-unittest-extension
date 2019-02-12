@@ -45,24 +45,12 @@ Add the plugin to the [gradle-cobol-plugin](https://github.com/RosesTheN00b/grad
 
 build.gradle:
 
-    buildscript {
-    	 dependencies {
-    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: 'latest'
-    	}
-    }
-
     plugins {
     	id 'de.sebastianruziczka.Cobol' version 'latest'
     }
 
 
 Or hardcode specific versions in your build.gradle (not preferred):
-
-    buildscript {
-    	 dependencies {
-    		classpath group: 'de.sebastianruziczka', name: 'gradle-cobol-plugin-unittest-extension', version: 'gradle.unitVersion'
-    	}
-    }
 
     plugins {
     	id 'de.sebastianruziczka.Cobol' version '0.0.40'
