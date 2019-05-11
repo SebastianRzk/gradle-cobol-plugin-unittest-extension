@@ -28,7 +28,7 @@ dependencies {
 
 def applicationName = "CobolPluginUnitTestExtension"
 group = 'de.sebastianruziczka'
-version = '0.0.30'
+version = '0.0.31'
 def realVersion = ''
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8' 
@@ -65,18 +65,6 @@ publishing {
 			url "../repo/mvn"
 		}
 	}
-}
-
-GradlePropertyFilter propFilter = new GradlePropertyFilter([
-	'gradle.unitVersion' :  version
-	])
-
-task (generateVersions, type: Copy){
-	from '.'
-	into '.'
-	include '**/*.base'
-	rename {it - '.base'}
-	filter { line ->propFilter.filter(line)}
 }
 
 task (switchOffline, type:Copy){
