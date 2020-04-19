@@ -7,6 +7,6 @@ sudo: required
 
 
 script:
-     - gradle --version
-     - gradle check
+     - ./gradlew --version
+     - ./gradlew check
      - sh ci/execExampleTests.sh
