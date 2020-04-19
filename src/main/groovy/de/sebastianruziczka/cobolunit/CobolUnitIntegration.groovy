@@ -70,7 +70,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 		}
 		this.project.tasks.testIntegration {
 			doLast {
-				this.project.tasks.computeTestCoverage {
+				this.project.tasks.computeIntegrationTestCoverage {
 					testOutput = this.coverageOutput
 				}
 			}
