@@ -60,9 +60,13 @@ class CobolUnit implements CobolTestFramework{
 		this.project.task('computeTestCoverage', type:ComputeTestCoverageTask){
 			group: 'COBOL Development'
 			description: 'Generates a testcoverage xml (cobertura-style)'
-
-			doFirst{
-				testOutput = this.coverageOutput
+		}
+		
+		this.project.task('testUnit'){
+			doLast {
+				this.project.tasks.computeTestCoverage {
+					testOutput = this.coverageOutput
+				}
 			}
 		}
 	}
