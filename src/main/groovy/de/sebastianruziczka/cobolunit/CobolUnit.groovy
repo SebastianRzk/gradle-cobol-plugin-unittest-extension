@@ -63,7 +63,6 @@ class CobolUnit implements CobolTestFramework{
 
 			doFirst{
 				testOuput = this.coverageOutput
-				conf = this.configuration
 			}
 		}
 	}

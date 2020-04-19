@@ -1,6 +1,7 @@
 package de.sebastianruziczka.cobolunit.coverage
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 
 import de.sebastianruziczka.CobolExtension
@@ -12,20 +13,23 @@ import de.sebastianruziczka.cobolunit.coverage.sourcefilereader.SourceFileReader
 
 class ComputeTestCoverageTask extends DefaultTask{
 
+	@Input
 	public Map<CobolUnitSourceFile, List<String>> testOuput
-	public CobolExtension conf
+	@Input
 	public String coveragePrefix = ""
 
 	@TaskAction
 	public void computeTestCoverage() {
+		final CobolExtension conf = getProject().extensions.findByType(CobolExtension.class)
+		
 		def files = []
 		Set<String> computedFiles = new HashSet<>()
 
-		String sourceFileLocation = this.conf.projectFileResolver(this.conf.srcMainPath).absolutePath
-		def allSourceFiles = project.fileTree(sourceFileLocation).include(this.conf.filetypePattern())
+		String sourceFileLocation = conf.projectFileResolver(conf.srcMainPath).absolutePath
+		def allSourceFiles = project.fileTree(sourceFileLocation).include(conf.filetypePattern())
 		allSourceFiles.each { File file ->
 			String relativePath = file.absolutePath.replaceAll(sourceFileLocation, "").substring(1)
-			files << new SourceFileReader(this.conf).read(new CobolUnitSourceFile(new CobolSourceFile(this.conf, relativePath), null, null, null))
+			files << new SourceFileReader(conf).read(new CobolUnitSourceFile(new CobolSourceFile(conf, relativePath), null, null, null))
 		}
 
 		if (this.testOuput == null) {
@@ -36,8 +40,8 @@ class ComputeTestCoverageTask extends DefaultTask{
 			}
 		}
 
-		String xml = new XMLReportWriter(this.conf).writeToXML(files)
-		File xmlOutput = new File(this.conf.absoluteUnitTestFrameworkPath(CobolUnit.class.getSimpleName()) + '/' + this.coveragePrefix + 'coverage.xml')
+		String xml = new XMLReportWriter(conf).writeToXML(files)
+		File xmlOutput = new File(conf.absoluteUnitTestFrameworkPath(CobolUnit.class.getSimpleName()) + '/' + this.coveragePrefix + 'coverage.xml')
 		xmlOutput << xml
 	}
 }

@@ -66,11 +66,10 @@ class CobolUnitIntegration implements CobolTestFramework{
 
 			group: 'COBOL Development'
 			description: 'Generates a testcoverage xml (cobertura-style)'
+			coveragePrefix = "integration-"
 
 			doFirst{
 				testOuput = this.coverageOutput
-				conf = this.configuration
-				coveragePrefix = "integration-"
 			}
 		}
 	}
