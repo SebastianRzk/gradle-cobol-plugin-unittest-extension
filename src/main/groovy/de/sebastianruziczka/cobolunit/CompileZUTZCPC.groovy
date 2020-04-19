@@ -5,6 +5,7 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.OutputFiles
 import org.gradle.api.tasks.TaskAction
 
+import de.sebastianruziczka.CobolExtension
 import de.sebastianruziczka.cobolunit.steps.ZUTZCPC
 
 class CompileZUTZCPC extends DefaultTask {
@@ -13,8 +14,10 @@ class CompileZUTZCPC extends DefaultTask {
 	
 	public CompileZUTZCPC() {
 		def project = getProject()
-		zutzcpcInstance = new ZUTZCPC(project.getExtensions().getByName('cobol').absoluteUnitTestFrameworkPath(CobolUnit.getSimpleName()),
-			 project.getExtensions().getByName('cobol'))
+		final CobolExtension configuration = getProject().extensions.findByType(CobolExtension.class)
+		
+		zutzcpcInstance = new ZUTZCPC(configuration.absoluteUnitTestFrameworkPath(CobolUnit.getSimpleName()),
+			 configuration)
 		
 	}
 	
