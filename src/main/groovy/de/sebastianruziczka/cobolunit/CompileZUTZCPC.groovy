@@ -1,6 +1,7 @@
 package de.sebastianruziczka.cobolunit
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.Project
 import org.gradle.api.tasks.OutputFiles
 import org.gradle.api.tasks.TaskAction
 
@@ -8,8 +9,15 @@ import de.sebastianruziczka.cobolunit.steps.ZUTZCPC
 
 class CompileZUTZCPC extends DefaultTask {
 
-	ZUTZCPC zutzcpcInstance = new ZUTZCPC(project.getExtensions().getByName('cobol').absoluteUnitTestFrameworkPath(CobolUnit.getSimpleName()) , project.getExtensions().getByName('cobol'))
-
+	private ZUTZCPC zutzcpcInstance;
+	
+	public CompileZUTZCPC(Project project) {
+		zutzcpcInstance = new ZUTZCPC(project.getExtensions().getByName('cobol').absoluteUnitTestFrameworkPath(CobolUnit.getSimpleName()),
+			 project.getExtensions().getByName('cobol'))
+		
+	}
+	
+	
 	@OutputFiles
 	public Map<String, File> getInstance() {
 		HashMap<String, File> files = new HashMap<>()
