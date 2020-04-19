@@ -67,18 +67,6 @@ publishing {
 	}
 }
 
-GradlePropertyFilter propFilter = new GradlePropertyFilter([
-	'gradle.unitVersion' :  version
-	])
-
-task (generateVersions, type: Copy){
-	from '.'
-	into '.'
-	include '**/*.base'
-	rename {it - '.base'}
-	filter { line ->propFilter.filter(line)}
-}
-
 task (switchOffline, type:Copy){
         from '.'
         into '.'
