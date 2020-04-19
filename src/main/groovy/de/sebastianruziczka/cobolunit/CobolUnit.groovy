@@ -58,12 +58,15 @@ class CobolUnit implements CobolTestFramework{
 		this.project.tasks.testUnit.dependsOn << this.project.tasks.compileZUTZCPC
 
 		this.project.task('computeTestCoverage', type:ComputeTestCoverageTask){
-			group = 'COBOL Development'
-			description = 'Generates a testcoverage xml (cobertura-style)'
-
-			doFirst{
-				testOuput = this.coverageOutput
-				conf = this.configuration
+			group: 'COBOL Development'
+			description: 'Generates a testcoverage xml (cobertura-style)'
+		}
+		
+		this.project.tasks.testUnit{
+			doLast {
+				this.project.tasks.computeTestCoverage {
+					testOutput = this.coverageOutput
+				}
 			}
 		}
 	}

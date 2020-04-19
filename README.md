@@ -61,7 +61,7 @@ settings.gradle:
     pluginManagement {
     	repositories {
     		maven {
-    			url 'https://sebastianruziczka.de/repo/mvn/'
+    			url 'https://repo.sebastianruziczka.de/mvn/'
     		}
     	}
     }
