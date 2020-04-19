@@ -68,7 +68,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 			description: 'Generates a testcoverage xml (cobertura-style)'
 			coveragePrefix = "integration-"
 		}
-		this.project.task('testIntegration'){
+		this.project.tasks.testIntegration {
 			doLast {
 				this.project.tasks.computeTestCoverage {
 					testOutput = this.coverageOutput

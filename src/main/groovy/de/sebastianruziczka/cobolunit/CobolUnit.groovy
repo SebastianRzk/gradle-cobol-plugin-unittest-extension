@@ -62,7 +62,7 @@ class CobolUnit implements CobolTestFramework{
 			description: 'Generates a testcoverage xml (cobertura-style)'
 		}
 		
-		this.project.task('testUnit'){
+		this.project.tasks.testUnit{
 			doLast {
 				this.project.tasks.computeTestCoverage {
 					testOutput = this.coverageOutput
