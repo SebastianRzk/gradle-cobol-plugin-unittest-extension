@@ -13,11 +13,19 @@ import de.sebastianruziczka.cobolunit.coverage.sourcefilereader.SourceFileReader
 
 class ComputeTestCoverageTask extends DefaultTask{
 
-	@Input
 	public Map<CobolUnitSourceFile, List<String>> testOuput
-	@Input
 	public String coveragePrefix = ""
 
+	@Input
+	public String getCoveragePrefix() {
+		return this.coveragePrefix
+	}
+	
+	@Input
+	public Map<CobolUnitSourceFile, List<String>> getTestOutput(){
+		return this.testOuput
+	}
+	
 	@TaskAction
 	public void computeTestCoverage() {
 		final CobolExtension conf = getProject().extensions.findByType(CobolExtension.class)
@@ -32,16 +40,16 @@ class ComputeTestCoverageTask extends DefaultTask{
 			files << new SourceFileReader(conf).read(new CobolUnitSourceFile(new CobolSourceFile(conf, relativePath), null, null, null))
 		}
 
-		if (this.testOuput == null) {
+		if (getTestOutput() == null) {
 			logger.warn('No testcoverage found!')
 		}else {
-			for (CobolUnitSourceFile file : this.testOuput.keySet()) {
-				new TestCoverageMerger().merge(files, Arrays.asList(this.testOuput.get(file).split('\n')))
+			for (CobolUnitSourceFile file : getTestOutput().keySet()) {
+				new TestCoverageMerger().merge(files, Arrays.asList(getTestOutput().get(file).split('\n')))
 			}
 		}
 
 		String xml = new XMLReportWriter(conf).writeToXML(files)
-		File xmlOutput = new File(conf.absoluteUnitTestFrameworkPath(CobolUnit.class.getSimpleName()) + '/' + this.coveragePrefix + 'coverage.xml')
+		File xmlOutput = new File(conf.absoluteUnitTestFrameworkPath(CobolUnit.class.getSimpleName()) + '/' + getCoveragePrefix() + 'coverage.xml')
 		xmlOutput << xml
 	}
 }
