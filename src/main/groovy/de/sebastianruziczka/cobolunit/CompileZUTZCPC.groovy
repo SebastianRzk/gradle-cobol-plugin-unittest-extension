@@ -1,5 +1,7 @@
 package de.sebastianruziczka.cobolunit
 
+import javax.inject.Inject
+
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.OutputFiles
@@ -12,6 +14,7 @@ class CompileZUTZCPC extends DefaultTask {
 
 	private ZUTZCPC zutzcpcInstance;
 	
+	@Inject
 	public CompileZUTZCPC() {
 		super()
 		def project = getProject()
