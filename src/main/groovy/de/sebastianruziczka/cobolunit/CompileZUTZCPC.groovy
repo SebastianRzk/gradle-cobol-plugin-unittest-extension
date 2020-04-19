@@ -11,7 +11,8 @@ class CompileZUTZCPC extends DefaultTask {
 
 	private ZUTZCPC zutzcpcInstance;
 	
-	public CompileZUTZCPC(Project project) {
+	public CompileZUTZCPC() {
+		def project = getProject()
 		zutzcpcInstance = new ZUTZCPC(project.getExtensions().getByName('cobol').absoluteUnitTestFrameworkPath(CobolUnit.getSimpleName()),
 			 project.getExtensions().getByName('cobol'))
 		
