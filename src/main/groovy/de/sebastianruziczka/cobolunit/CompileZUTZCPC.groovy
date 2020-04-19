@@ -14,9 +14,7 @@ class CompileZUTZCPC extends DefaultTask {
 
 	private ZUTZCPC zutzcpcInstance;
 	
-	@Inject
 	public CompileZUTZCPC() {
-		super()
 		def project = getProject()
 		final CobolExtension configuration = getProject().extensions.findByType(CobolExtension.class)
 		
