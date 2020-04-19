@@ -13,7 +13,7 @@ import de.sebastianruziczka.cobolunit.coverage.sourcefilereader.SourceFileReader
 
 class ComputeTestCoverageTask extends DefaultTask{
 
-	public Map<CobolUnitSourceFile, List<String>> testOuput
+	public Map<CobolUnitSourceFile, List<String>> testOutput
 	public String coveragePrefix = ""
 
 	@Input
@@ -23,7 +23,7 @@ class ComputeTestCoverageTask extends DefaultTask{
 	
 	@Input
 	public Map<CobolUnitSourceFile, List<String>> getTestOutput(){
-		return this.testOuput
+		return this.testOutput
 	}
 	
 	@TaskAction

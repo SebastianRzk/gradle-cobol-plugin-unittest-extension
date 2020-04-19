@@ -62,7 +62,7 @@ class CobolUnit implements CobolTestFramework{
 			description: 'Generates a testcoverage xml (cobertura-style)'
 
 			doFirst{
-				testOuput = this.coverageOutput
+				testOutput = this.coverageOutput
 			}
 		}
 	}

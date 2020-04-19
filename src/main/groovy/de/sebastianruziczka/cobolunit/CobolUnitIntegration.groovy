@@ -69,7 +69,7 @@ class CobolUnitIntegration implements CobolTestFramework{
 			coveragePrefix = "integration-"
 
 			doFirst{
-				testOuput = this.coverageOutput
+				testOutput = this.coverageOutput
 			}
 		}
 	}
